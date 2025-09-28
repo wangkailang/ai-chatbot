@@ -9,13 +9,12 @@ export type ChatModel = {
 export const chatModels: ChatModel[] = [
   {
     id: "chat-model",
-    name: "Grok Vision",
-    description: "Advanced multimodal model with vision and text capabilities",
+    name: "DeepSeek Chat",
+    description: "A versatile model for general-purpose conversations",
   },
   {
     id: "chat-model-reasoning",
-    name: "Grok Reasoning",
-    description:
-      "Uses advanced chain-of-thought reasoning for complex problems",
+    name: "DeepSeek Reasoning",
+    description: "Optimized for complex reasoning and problem-solving tasks",
   },
 ];
