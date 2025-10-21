@@ -93,7 +93,7 @@ export function formatMultiAgentOutput(
       duration,
       graphExecutionId: state.graphExecutionId,
       synthesisStrategy,
-      warnings: state.errors.length > 0 ? state.errors : [],
+      warnings: state.errors?.length > 0 ? state.errors : [],
     },
   };
 }

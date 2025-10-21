@@ -40,7 +40,9 @@ Guidelines:
 - Consider the writing domain, target audience, and content goals
 - Prioritize roles that add unique value
 - Balance specialist expertise with broad accessibility
-- Ensure selected roles cover all key aspects of the request`;
+- Ensure selected roles cover all key aspects of the request
+
+IMPORTANT: Return your response in JSON format following the provided schema.`;
 
 /**
  * Analyze a user request and determine optimal writing roles
@@ -56,29 +58,60 @@ export async function analyzeRoles(
 
   const userPrompt = buildUserPrompt(userRequest, constraints);
 
-  const { object } = await generateObject({
-    model: myProvider.languageModel("chat-model"),
-    system: ROLE_ANALYZER_SYSTEM_PROMPT,
-    prompt: userPrompt,
-    schema: RoleAnalysisSchema,
-    temperature: 0.7,
-  });
+  try {
+    const result = await generateObject({
+      model: myProvider.languageModel("chat-model"),
+      system: ROLE_ANALYZER_SYSTEM_PROMPT,
+      prompt: userPrompt,
+      schema: RoleAnalysisSchema,
+      temperature: 0.7,
+    });
 
-  // Validate role count
-  if (object.identifiedRoles.length < minRoles) {
-    throw new Error(
-      `Role analysis must identify at least ${minRoles} roles, got ${object.identifiedRoles.length}`
-    );
+    if (!result.object) {
+      throw new Error("No object generated from role analysis");
+    }
+
+    const object = result.object;
+
+    // Validate role count
+    if (object.identifiedRoles.length < minRoles) {
+      throw new Error(
+        `Role analysis must identify at least ${minRoles} roles, got ${object.identifiedRoles.length}`
+      );
+    }
+
+    if (object.identifiedRoles.length > maxRoles) {
+      // Trim to max roles, keeping highest priority
+      object.identifiedRoles = object.identifiedRoles
+        .sort((a, b) => a.priority - b.priority)
+        .slice(0, maxRoles);
+    }
+
+    return object;
+  } catch (error) {
+    console.error("Role analysis error:", error);
+    // Fallback to default roles if analysis fails
+    return {
+      identifiedRoles: [
+        {
+          id: "content_writer",
+          name: "Content Writer",
+          description: "Professional content writer with broad expertise",
+          promptTemplate: `You are a professional content writer. Create high-quality content for: ${userRequest}`,
+          priority: 1,
+        },
+        {
+          id: "editor",
+          name: "Editor",
+          description: "Editorial expert ensuring clarity and quality",
+          promptTemplate: `You are an experienced editor. Review and refine content for: ${userRequest}`,
+          priority: 2,
+        },
+      ],
+      reasoning: "Using fallback roles due to analysis error",
+      confidence: 0.5,
+    };
   }
-
-  if (object.identifiedRoles.length > maxRoles) {
-    // Trim to max roles, keeping highest priority
-    object.identifiedRoles = object.identifiedRoles
-      .sort((a, b) => a.priority - b.priority)
-      .slice(0, maxRoles);
-  }
-
-  return object;
 }
 
 /**
@@ -88,7 +121,7 @@ function buildUserPrompt(
   userRequest: string,
   constraints?: UserConstraints
 ): string {
-  let prompt = `Analyze this writing request and identify optimal roles:\n\nRequest: ${userRequest}`;
+  let prompt = `Analyze this writing request and identify optimal roles. Return the result as a JSON object:\n\nRequest: ${userRequest}`;
 
   if (constraints) {
     prompt += "\n\nConstraints:";
@@ -111,6 +144,28 @@ function buildUserPrompt(
         "\n  (Consider these suggestions but optimize as needed for best results)";
     }
   }
+
+  prompt += `\n\nReturn a JSON object with exactly this structure:
+{
+  "identifiedRoles": [
+    {
+      "id": "role_id_in_snake_case",
+      "name": "Role Name",
+      "description": "Brief description of this role's perspective",
+      "promptTemplate": "You are a [role]. Your task is to contribute to: ${userRequest}",
+      "priority": 1
+    }
+  ],
+  "reasoning": "Explanation of why these roles were selected",
+  "confidence": 0.85
+}
+
+Requirements:
+- identifiedRoles array must have 2-4 items
+- Each role must have: id, name, description, promptTemplate, priority
+- priority must be an integer (1, 2, 3, or 4)
+- confidence must be between 0.0 and 1.0
+- promptTemplate should be detailed instructions for that role`;
 
   return prompt;
 }
