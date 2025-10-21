@@ -9,10 +9,12 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
   onCreateDocument: async ({ title, dataStream }) => {
     let draftContent = "";
 
+    const promptWithFormatHint = `${title}\n\nReturn a json object that matches the provided schema.`;
+
     const { fullStream } = streamObject({
       model: myProvider.languageModel("artifact-model"),
       system: sheetPrompt,
-      prompt: title,
+      prompt: promptWithFormatHint,
       schema: z.object({
         csv: z.string().describe("CSV data"),
       }),
@@ -48,10 +50,12 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
   onUpdateDocument: async ({ document, description, dataStream }) => {
     let draftContent = "";
 
+    const promptWithFormatHint = `${description}\n\nReturn a json object that matches the provided schema.`;
+
     const { fullStream } = streamObject({
       model: myProvider.languageModel("artifact-model"),
       system: updateDocumentPrompt(document.content, "sheet"),
-      prompt: description,
+      prompt: promptWithFormatHint,
       schema: z.object({
         csv: z.string(),
       }),

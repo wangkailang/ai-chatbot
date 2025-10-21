@@ -9,10 +9,12 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
   onCreateDocument: async ({ title, dataStream }) => {
     let draftContent = "";
 
+    const promptWithFormatHint = `${title}\n\nReturn a json object that matches the provided schema.`;
+
     const { fullStream } = streamObject({
       model: myProvider.languageModel("artifact-model"),
       system: codePrompt,
-      prompt: title,
+      prompt: promptWithFormatHint,
       schema: z.object({
         code: z.string(),
       }),
@@ -42,10 +44,12 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
   onUpdateDocument: async ({ document, description, dataStream }) => {
     let draftContent = "";
 
+    const promptWithFormatHint = `${description}\n\nReturn a json object that matches the provided schema.`;
+
     const { fullStream } = streamObject({
       model: myProvider.languageModel("artifact-model"),
       system: updateDocumentPrompt(document.content, "code"),
-      prompt: description,
+      prompt: promptWithFormatHint,
       schema: z.object({
         code: z.string(),
       }),

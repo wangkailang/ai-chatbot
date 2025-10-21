@@ -42,6 +42,21 @@ export function DocumentPreview({
   const previewDocument = useMemo(() => documents?.[0], [documents]);
   const hitboxRef = useRef<HTMLDivElement>(null);
 
+  const inFlightDocument = useMemo(() => {
+    if (!artifact.content || artifact.documentId === "init") {
+      return null;
+    }
+
+    return {
+      title: artifact.title,
+      kind: artifact.kind,
+      content: artifact.content,
+      id: artifact.documentId,
+      createdAt: new Date(),
+      userId: "noop",
+    } satisfies Document;
+  }, [artifact.content, artifact.documentId, artifact.kind, artifact.title]);
+
   useEffect(() => {
     const boundingBox = hitboxRef.current?.getBoundingClientRect();
 
@@ -81,21 +96,14 @@ export function DocumentPreview({
   }
 
   if (isDocumentsFetching) {
-    return <LoadingSkeleton artifactKind={result.kind ?? args.kind} />;
+    return (
+      <LoadingSkeleton
+        artifactKind={result?.kind ?? args?.kind ?? artifact.kind}
+      />
+    );
   }
 
-  const document: Document | null = previewDocument
-    ? previewDocument
-    : artifact.status === "streaming"
-      ? {
-          title: artifact.title,
-          kind: artifact.kind,
-          content: artifact.content,
-          id: artifact.documentId,
-          createdAt: new Date(),
-          userId: "noop",
-        }
-      : null;
+  const document: Document | null = previewDocument ?? inFlightDocument;
 
   if (!document) {
     return <LoadingSkeleton artifactKind={artifact.kind} />;
