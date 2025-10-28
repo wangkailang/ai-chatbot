@@ -12,7 +12,8 @@ export const multiAgentWriting = tool({
     "Use multiple AI agents to collaboratively write high-quality content. " +
     "The system automatically identifies 2-4 specialized roles (like technical expert, storyteller, editor, etc.) " +
     "based on the writing request, then combines their outputs into cohesive content. " +
-    "Best for: articles, documentation, marketing content, reports, creative writing, etc.",
+    "Best for: articles, documentation, marketing content, reports, creative writing, etc. " +
+    "IMPORTANT: After using this tool, you should call createDocument to save the generated content as a document artifact.",
   inputSchema: z.object({
     request: z
       .string()
@@ -82,6 +83,11 @@ export const multiAgentWriting = tool({
             role: agent.roleName,
             confidence: agent.confidence,
           })),
+        },
+        suggestedNextAction: {
+          tool: "createDocument",
+          reason:
+            "The multi-agent content has been generated. You should now create a document to save this content.",
         },
       };
     } catch (error) {
