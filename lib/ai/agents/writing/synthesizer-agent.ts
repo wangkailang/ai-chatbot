@@ -2,9 +2,9 @@
  * Synthesizer Agent: Combines outputs from multiple agents into cohesive content
  */
 
-import { generateText } from "ai";
 import { SynthesisStrategy } from "@/lib/ai/langgraph/types";
 import { myProvider } from "@/lib/ai/providers";
+import { generateText } from "@/lib/utils/geterate";
 import type { AgentOutput } from "./role-types";
 
 /**

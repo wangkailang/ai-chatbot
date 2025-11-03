@@ -2,9 +2,9 @@
  * Universal Writing Agent: Adapts to any role definition
  */
 
-import { generateText } from "ai";
 import type { UserConstraints } from "@/lib/ai/langgraph/types";
 import { myProvider } from "@/lib/ai/providers";
+import { generateText } from "@/lib/utils/geterate";
 import {
   type AgentOutput,
   AgentOutputSchema,
