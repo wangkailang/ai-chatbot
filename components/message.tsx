@@ -22,6 +22,7 @@ import { SparklesIcon } from "./icons";
 import { MessageActions } from "./message-actions";
 import { MessageEditor } from "./message-editor";
 import { MessageReasoning } from "./message-reasoning";
+import { MultiAgentWritingResult } from "./multi-agent-writing-result";
 import { PreviewAttachment } from "./preview-attachment";
 import { Weather } from "./weather";
 
@@ -259,6 +260,29 @@ const PurePreviewMessage = ({
                               type="request-suggestions"
                             />
                           )
+                        }
+                      />
+                    )}
+                  </ToolContent>
+                </Tool>
+              );
+            }
+
+            if (type === "tool-multiAgentWriting") {
+              const { toolCallId, state } = part;
+
+              return (
+                <Tool defaultOpen={true} key={toolCallId}>
+                  <ToolHeader state={state} type="tool-multiAgentWriting" />
+                  <ToolContent>
+                    {state === "input-available" && (
+                      <ToolInput input={part.input} />
+                    )}
+                    {state === "output-available" && (
+                      <ToolOutput
+                        errorText={undefined}
+                        output={
+                          <MultiAgentWritingResult output={part.output} />
                         }
                       />
                     )}

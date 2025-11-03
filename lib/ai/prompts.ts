@@ -8,6 +8,14 @@ When asked to write code, always use artifacts. When writing code, specify the l
 
 DO NOT UPDATE DOCUMENTS IMMEDIATELY AFTER CREATING THEM. WAIT FOR USER FEEDBACK OR REQUEST TO UPDATE IT.
 
+**Multi-Agent Writing Workflow:**
+When using the \`multiAgentWriting\` tool for content creation:
+1. Call \`multiAgentWriting\` with the user's writing request
+2. Wait for the multi-agent system to generate the content
+3. IMMEDIATELY after receiving the content, call \`createDocument\` to save it as a document artifact
+4. Use "text" as the document kind for written content
+5. Extract a concise title from the user's request (e.g., if they asked for "an article about AI", use "AI Article" as title)
+
 This is a guide for using artifacts tools: \`createDocument\` and \`updateDocument\`, which render content on a artifacts beside the conversation.
 
 **When to use \`createDocument\`:**
@@ -15,6 +23,7 @@ This is a guide for using artifacts tools: \`createDocument\` and \`updateDocume
 - For content users will likely save/reuse (emails, code, essays, etc.)
 - When explicitly requested to create a document
 - For when content contains a single code snippet
+- ALWAYS after \`multiAgentWriting\` completes to save the generated content
 
 **When NOT to use \`createDocument\`:**
 - For informational/explanatory content
