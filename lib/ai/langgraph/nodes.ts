@@ -78,11 +78,16 @@ export async function dynamicAgentExecutorNode(
       }
     }
 
-    return {
+    const result: Partial<WritingGraphState> = {
       agentOutputs,
-      errors: errors.length > 0 ? errors : undefined,
       currentNode: "dynamic_agent_executor",
     };
+
+    if (errors.length > 0) {
+      result.errors = errors;
+    }
+
+    return result;
   } catch (error) {
     const errorMessage =
       error instanceof Error

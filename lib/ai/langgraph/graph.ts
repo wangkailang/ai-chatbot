@@ -1,8 +1,9 @@
 /**
  * Multi-Agent Writing Workflow
- * Simplified sequential execution for reliable operation
+ * LangGraph implementation for orchestrated multi-agent collaboration
  */
 
+import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 import { nanoid } from "nanoid";
 import {
   dynamicAgentExecutorNode,
@@ -11,6 +12,87 @@ import {
   synthesizerNode,
 } from "./nodes";
 import type { WritingGraphState } from "./types";
+
+/**
+ * Define the state annotation for LangGraph
+ */
+const WritingStateAnnotation = Annotation.Root({
+  userRequest: Annotation<string>,
+  userConstraints: Annotation<WritingGraphState["userConstraints"]>({
+    reducer: (a, b) => b ?? a,
+  }),
+  roleAnalysis: Annotation<WritingGraphState["roleAnalysis"]>({
+    reducer: (a, b) => b ?? a,
+  }),
+  agentOutputs: Annotation<WritingGraphState["agentOutputs"]>({
+    reducer: (a, b) => ({ ...a, ...b }),
+    default: () => ({}),
+  }),
+  synthesizedContent: Annotation<string | undefined>({
+    reducer: (a, b) => b ?? a,
+  }),
+  finalReasoning: Annotation<string | undefined>({
+    reducer: (a, b) => b ?? a,
+  }),
+  graphExecutionId: Annotation<string>,
+  startTime: Annotation<number>,
+  currentNode: Annotation<string | undefined>({
+    reducer: (a, b) => b ?? a,
+  }),
+  errors: Annotation<string[]>({
+    reducer: (a, b) => [...a, ...(Array.isArray(b) ? b : [])],
+    default: () => [],
+  }),
+});
+
+/**
+ * Conditional edge function: Route after role analysis
+ */
+function shouldContinueAfterRoleAnalysis(
+  state: typeof WritingStateAnnotation.State
+) {
+  if (state.errors && state.errors.length > 0) {
+    return "error_handler";
+  }
+  return "agent_executor";
+}
+
+/**
+ * Conditional edge function: Route after agent execution
+ */
+function shouldContinueAfterAgentExecution(
+  state: typeof WritingStateAnnotation.State
+) {
+  if (state.agentOutputs && Object.keys(state.agentOutputs).length > 0) {
+    return "synthesizer";
+  }
+  return "error_handler";
+}
+
+/**
+ * Create the LangGraph StateGraph for multi-agent writing
+ */
+function createWritingGraph() {
+  const workflow = new StateGraph(WritingStateAnnotation)
+    // Add nodes
+    .addNode("role_analyzer", roleAnalyzerNode)
+    .addNode("agent_executor", dynamicAgentExecutorNode)
+    .addNode("synthesizer", synthesizerNode)
+    .addNode("error_handler", errorHandlerNode)
+    // Add edges
+    .addEdge(START, "role_analyzer")
+    .addConditionalEdges("role_analyzer", shouldContinueAfterRoleAnalysis)
+    .addConditionalEdges("agent_executor", shouldContinueAfterAgentExecution)
+    .addEdge("synthesizer", END)
+    .addEdge("error_handler", END);
+
+  return workflow.compile();
+}
+
+/**
+ * Export the compiled graph for LangGraph CLI
+ */
+export const graph = createWritingGraph();
 
 /**
  * Create the initial state for the graph
@@ -31,42 +113,22 @@ export function createInitialState(
 
 /**
  * Execute the multi-agent writing workflow
- * Simplified implementation without LangGraph for now
+ * Now using the LangGraph compiled graph
  */
 export async function executeWritingWorkflow(
   state: WritingGraphState
 ): Promise<WritingGraphState> {
-  let currentState = { ...state };
-
   try {
-    // Step 1: Analyze roles
-    const roleAnalysisResult = await roleAnalyzerNode(currentState);
-    currentState = { ...currentState, ...roleAnalysisResult };
-
-    if (currentState.errors.length > 0) {
-      const errorResult = errorHandlerNode(currentState);
-      return { ...currentState, ...errorResult };
-    }
-
-    // Step 2: Execute dynamic agents
-    const agentExecutorResult = await dynamicAgentExecutorNode(currentState);
-    currentState = { ...currentState, ...agentExecutorResult };
-
-    if (Object.keys(currentState.agentOutputs).length === 0) {
-      const errorResult = errorHandlerNode(currentState);
-      return { ...currentState, ...errorResult };
-    }
-
-    // Step 3: Synthesize outputs
-    const synthesizerResult = await synthesizerNode(currentState);
-    currentState = { ...currentState, ...synthesizerResult };
-
-    return currentState;
+    const result = await graph.invoke(state);
+    return result as WritingGraphState;
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown workflow error";
-    currentState.errors.push(errorMessage);
-    const errorResult = errorHandlerNode(currentState);
-    return { ...currentState, ...errorResult };
+    return {
+      ...state,
+      errors: [...state.errors, errorMessage],
+      synthesizedContent: `An error occurred during content generation: ${errorMessage}`,
+      finalReasoning: "Error occurred during graph execution",
+    };
   }
 }
