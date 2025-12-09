@@ -29,13 +29,11 @@ export const codeArtifact = new Artifact<"code">({
       }));
     }
   },
-  content: ({ metadata: _metadata, setMetadata: _setMetadata, ...props }) => {
-    return (
-      <div className="px-1">
-        <CodeEditor {...props} />
-      </div>
-    );
-  },
+  content: ({ metadata: _metadata, setMetadata: _setMetadata, ...props }) => (
+    <div className="px-1">
+      <CodeEditor {...props} />
+    </div>
+  ),
   actions: [
     {
       icon: <PlayIcon size={18} />,

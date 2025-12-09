@@ -1,6 +1,5 @@
 "use server";
 
-import type { UIMessage } from "ai";
 import { cookies } from "next/headers";
 import type { VisibilityType } from "@/components/visibility-selector";
 import { myProvider } from "@/lib/ai/providers";
@@ -9,6 +8,7 @@ import {
   getMessageById,
   updateChatVisiblityById,
 } from "@/lib/db/queries";
+import type { ChatMessage } from "@/lib/types";
 import { generateText } from "@/lib/utils/geterate";
 
 export async function saveChatModelAsCookie(model: string) {
@@ -19,7 +19,7 @@ export async function saveChatModelAsCookie(model: string) {
 export async function generateTitleFromUserMessage({
   message,
 }: {
-  message: UIMessage;
+  message: ChatMessage;
 }) {
   const { text: title } = await generateText({
     model: myProvider.languageModel("title-model"),
