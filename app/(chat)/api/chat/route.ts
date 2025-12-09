@@ -1,4 +1,4 @@
-import { geolocation } from "@vercel/functions";
+import { geolocation } from '@vercel/functions';
 import {
   convertToModelMessages,
   createUIMessageStream,
@@ -6,28 +6,28 @@ import {
   smoothStream,
   stepCountIs,
   streamText,
-} from "ai";
-import { unstable_cache as cache } from "next/cache";
-import { after } from "next/server";
+} from 'ai';
+import { unstable_cache as cache } from 'next/cache';
+import { after } from 'next/server';
 import {
   createResumableStreamContext,
   type ResumableStreamContext,
-} from "resumable-stream";
-import type { ModelCatalog } from "tokenlens/core";
-import { fetchModels } from "tokenlens/fetch";
-import { getUsage } from "tokenlens/helpers";
-import { auth, type UserType } from "@/app/(auth)/auth";
-import type { VisibilityType } from "@/components/visibility-selector";
-import { entitlementsByUserType } from "@/lib/ai/entitlements";
-import type { ChatModel } from "@/lib/ai/models";
-import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
-import { myProvider } from "@/lib/ai/providers";
-import { createDocument } from "@/lib/ai/tools/create-document";
-import { getWeather } from "@/lib/ai/tools/get-weather";
-import { multiAgentWriting } from "@/lib/ai/tools/multi-agent-writing";
-import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
-import { updateDocument } from "@/lib/ai/tools/update-document";
-import { isProductionEnvironment } from "@/lib/constants";
+} from 'resumable-stream';
+import type { ModelCatalog } from 'tokenlens/core';
+import { fetchModels } from 'tokenlens/fetch';
+import { getUsage } from 'tokenlens/helpers';
+import { auth, type UserType } from '@/app/(auth)/auth';
+import type { VisibilityType } from '@/components/visibility-selector';
+import { entitlementsByUserType } from '@/lib/ai/entitlements';
+import type { ChatModel } from '@/lib/ai/models';
+import { type RequestHints, systemPrompt } from '@/lib/ai/prompts';
+import { myProvider } from '@/lib/ai/providers';
+import { createDocument } from '@/lib/ai/tools/create-document';
+import { getWeather } from '@/lib/ai/tools/get-weather';
+import { multiAgentWriting } from '@/lib/ai/tools/multi-agent-writing';
+import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
+import { updateDocument } from '@/lib/ai/tools/update-document';
+import { isProductionEnvironment } from '@/lib/constants';
 import {
   createStreamId,
   deleteChatById,
@@ -37,13 +37,13 @@ import {
   saveChat,
   saveMessages,
   updateChatLastContextById,
-} from "@/lib/db/queries";
-import { ChatSDKError } from "@/lib/errors";
-import type { ChatMessage } from "@/lib/types";
-import type { AppUsage } from "@/lib/usage";
-import { convertToUIMessages, generateUUID } from "@/lib/utils";
-import { generateTitleFromUserMessage } from "../../actions";
-import { type PostRequestBody, postRequestBodySchema } from "./schema";
+} from '@/lib/db/queries';
+import { ChatSDKError } from '@/lib/errors';
+import type { ChatMessage } from '@/lib/types';
+import type { AppUsage } from '@/lib/usage';
+import { convertToUIMessages, generateUUID } from '@/lib/utils';
+import { generateTitleFromUserMessage } from '../../actions';
+import { type PostRequestBody, postRequestBodySchema } from './schema';
 
 export const maxDuration = 60;
 
@@ -55,13 +55,13 @@ const getTokenlensCatalog = cache(
       return await fetchModels();
     } catch (err) {
       console.warn(
-        "TokenLens: catalog fetch failed, using default catalog",
+        'TokenLens: catalog fetch failed, using default catalog',
         err
       );
       return; // tokenlens helpers will fall back to defaultCatalog
     }
   },
-  ["tokenlens-catalog"],
+  ['tokenlens-catalog'],
   { revalidate: 24 * 60 * 60 } // 24 hours
 );
 
@@ -72,9 +72,9 @@ export function getStreamContext() {
         waitUntil: after,
       });
     } catch (error: any) {
-      if (error.message.includes("REDIS_URL")) {
+      if (error.message.includes('REDIS_URL')) {
         console.log(
-          " > Resumable streams are disabled due to missing REDIS_URL"
+          ' > Resumable streams are disabled due to missing REDIS_URL'
         );
       } else {
         console.error(error);
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
     const json = await request.json();
     requestBody = postRequestBodySchema.parse(json);
   } catch (_) {
-    return new ChatSDKError("bad_request:api").toResponse();
+    return new ChatSDKError('bad_request:api').toResponse();
   }
 
   try {
@@ -104,14 +104,14 @@ export async function POST(request: Request) {
     }: {
       id: string;
       message: ChatMessage;
-      selectedChatModel: ChatModel["id"];
+      selectedChatModel: ChatModel['id'];
       selectedVisibilityType: VisibilityType;
     } = requestBody;
 
     const session = await auth();
 
     if (!session?.user) {
-      return new ChatSDKError("unauthorized:chat").toResponse();
+      return new ChatSDKError('unauthorized:chat').toResponse();
     }
 
     const userType: UserType = session.user.type;
@@ -122,14 +122,14 @@ export async function POST(request: Request) {
     });
 
     if (messageCount > entitlementsByUserType[userType].maxMessagesPerDay) {
-      return new ChatSDKError("rate_limit:chat").toResponse();
+      return new ChatSDKError('rate_limit:chat').toResponse();
     }
 
     const chat = await getChatById({ id });
 
     if (chat) {
       if (chat.userId !== session.user.id) {
-        return new ChatSDKError("forbidden:chat").toResponse();
+        return new ChatSDKError('forbidden:chat').toResponse();
       }
     } else {
       const title = await generateTitleFromUserMessage({
@@ -161,7 +161,7 @@ export async function POST(request: Request) {
         {
           chatId: id,
           id: message.id,
-          role: "user",
+          role: 'user',
           parts: message.parts,
           attachments: [],
           createdAt: new Date(),
@@ -182,16 +182,16 @@ export async function POST(request: Request) {
           messages: convertToModelMessages(uiMessages),
           stopWhen: stepCountIs(5),
           experimental_activeTools:
-            selectedChatModel === "chat-model-reasoning"
+            selectedChatModel === 'chat-model-reasoning'
               ? []
               : [
-                  "getWeather",
-                  "createDocument",
-                  "updateDocument",
-                  "requestSuggestions",
-                  "multiAgentWriting",
+                  'getWeather',
+                  'createDocument',
+                  'updateDocument',
+                  'requestSuggestions',
+                  'multiAgentWriting',
                 ],
-          experimental_transform: smoothStream({ chunking: "word" }),
+          experimental_transform: smoothStream({ chunking: 'word' }),
           tools: {
             getWeather,
             createDocument: createDocument({ session, dataStream }),
@@ -204,7 +204,7 @@ export async function POST(request: Request) {
           },
           experimental_telemetry: {
             isEnabled: isProductionEnvironment,
-            functionId: "stream-text",
+            functionId: 'stream-text',
           },
           onFinish: async ({ usage }) => {
             try {
@@ -214,7 +214,7 @@ export async function POST(request: Request) {
               if (!modelId) {
                 finalMergedUsage = usage;
                 dataStream.write({
-                  type: "data-usage",
+                  type: 'data-usage',
                   data: finalMergedUsage,
                 });
                 return;
@@ -223,7 +223,7 @@ export async function POST(request: Request) {
               if (!providers) {
                 finalMergedUsage = usage;
                 dataStream.write({
-                  type: "data-usage",
+                  type: 'data-usage',
                   data: finalMergedUsage,
                 });
                 return;
@@ -231,11 +231,11 @@ export async function POST(request: Request) {
 
               const summary = getUsage({ modelId, usage, providers });
               finalMergedUsage = { ...usage, ...summary, modelId } as AppUsage;
-              dataStream.write({ type: "data-usage", data: finalMergedUsage });
+              dataStream.write({ type: 'data-usage', data: finalMergedUsage });
             } catch (err) {
-              console.warn("TokenLens enrichment failed", err);
+              console.warn('TokenLens enrichment failed', err);
               finalMergedUsage = usage;
-              dataStream.write({ type: "data-usage", data: finalMergedUsage });
+              dataStream.write({ type: 'data-usage', data: finalMergedUsage });
             }
           },
         });
@@ -268,13 +268,11 @@ export async function POST(request: Request) {
               context: finalMergedUsage,
             });
           } catch (err) {
-            console.warn("Unable to persist last usage for chat", id, err);
+            console.warn('Unable to persist last usage for chat', id, err);
           }
         }
       },
-      onError: () => {
-        return "Oops, an error occurred!";
-      },
+      onError: () => 'Oops, an error occurred!',
     });
 
     // const streamContext = getStreamContext();
@@ -289,7 +287,7 @@ export async function POST(request: Request) {
 
     return new Response(stream.pipeThrough(new JsonToSseTransformStream()));
   } catch (error) {
-    const vercelId = request.headers.get("x-vercel-id");
+    const vercelId = request.headers.get('x-vercel-id');
 
     if (error instanceof ChatSDKError) {
       return error.toResponse();
@@ -299,35 +297,35 @@ export async function POST(request: Request) {
     if (
       error instanceof Error &&
       error.message?.includes(
-        "AI Gateway requires a valid credit card on file to service requests"
+        'AI Gateway requires a valid credit card on file to service requests'
       )
     ) {
-      return new ChatSDKError("bad_request:activate_gateway").toResponse();
+      return new ChatSDKError('bad_request:activate_gateway').toResponse();
     }
 
-    console.error("Unhandled error in chat API:", error, { vercelId });
-    return new ChatSDKError("offline:chat").toResponse();
+    console.error('Unhandled error in chat API:', error, { vercelId });
+    return new ChatSDKError('offline:chat').toResponse();
   }
 }
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id");
+  const id = searchParams.get('id');
 
   if (!id) {
-    return new ChatSDKError("bad_request:api").toResponse();
+    return new ChatSDKError('bad_request:api').toResponse();
   }
 
   const session = await auth();
 
   if (!session?.user) {
-    return new ChatSDKError("unauthorized:chat").toResponse();
+    return new ChatSDKError('unauthorized:chat').toResponse();
   }
 
   const chat = await getChatById({ id });
 
   if (chat?.userId !== session.user.id) {
-    return new ChatSDKError("forbidden:chat").toResponse();
+    return new ChatSDKError('forbidden:chat').toResponse();
   }
 
   const deletedChat = await deleteChatById({ id });

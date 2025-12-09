@@ -1,28 +1,28 @@
-"use server";
+'use server';
 
-import type { UIMessage } from "ai";
-import { cookies } from "next/headers";
-import type { VisibilityType } from "@/components/visibility-selector";
-import { myProvider } from "@/lib/ai/providers";
+import { cookies } from 'next/headers';
+import type { VisibilityType } from '@/components/visibility-selector';
+import { myProvider } from '@/lib/ai/providers';
 import {
   deleteMessagesByChatIdAfterTimestamp,
   getMessageById,
   updateChatVisiblityById,
-} from "@/lib/db/queries";
-import { generateText } from "@/lib/utils/geterate";
+} from '@/lib/db/queries';
+import type { ChatMessage } from '@/lib/types';
+import { generateText } from '@/lib/utils/geterate';
 
 export async function saveChatModelAsCookie(model: string) {
   const cookieStore = await cookies();
-  cookieStore.set("chat-model", model);
+  cookieStore.set('chat-model', model);
 }
 
 export async function generateTitleFromUserMessage({
   message,
 }: {
-  message: UIMessage;
+  message: ChatMessage;
 }) {
   const { text: title } = await generateText({
-    model: myProvider.languageModel("title-model"),
+    model: myProvider.languageModel('title-model'),
     system: `\n
     - you will generate a short title based on the first message a user begins a conversation with
     - ensure it is not more than 80 characters long

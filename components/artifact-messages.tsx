@@ -1,22 +1,22 @@
-import type { UseChatHelpers } from "@ai-sdk/react";
-import equal from "fast-deep-equal";
-import { motion } from "framer-motion";
-import { memo } from "react";
-import { useMessages } from "@/hooks/use-messages";
-import type { Vote } from "@/lib/db/schema";
-import type { ChatMessage } from "@/lib/types";
-import type { UIArtifact } from "./artifact";
-import { PreviewMessage, ThinkingMessage } from "./message";
+import type { UseChatHelpers } from '@ai-sdk/react';
+import equal from 'fast-deep-equal';
+import { motion } from 'framer-motion';
+import { memo } from 'react';
+import { useMessages } from '@/hooks/use-messages';
+import type { Vote } from '@/lib/db/schema';
+import type { ChatMessage } from '@/lib/types';
+import type { UIArtifact } from './artifact';
+import { PreviewMessage, ThinkingMessage } from './message';
 
 type ArtifactMessagesProps = {
   chatId: string;
-  status: UseChatHelpers<ChatMessage>["status"];
+  status: UseChatHelpers<ChatMessage>['status'];
   votes: Vote[] | undefined;
   messages: ChatMessage[];
-  setMessages: UseChatHelpers<ChatMessage>["setMessages"];
-  regenerate: UseChatHelpers<ChatMessage>["regenerate"];
+  setMessages: UseChatHelpers<ChatMessage>['setMessages'];
+  regenerate: UseChatHelpers<ChatMessage>['regenerate'];
   isReadonly: boolean;
-  artifactStatus: UIArtifact["status"];
+  artifactStatus: UIArtifact['status'];
 };
 
 function PureArtifactMessages({
@@ -46,7 +46,7 @@ function PureArtifactMessages({
       {messages.map((message, index) => (
         <PreviewMessage
           chatId={chatId}
-          isLoading={status === "streaming" && index === messages.length - 1}
+          isLoading={status === 'streaming' && index === messages.length - 1}
           isReadonly={isReadonly}
           key={message.id}
           message={message}
@@ -63,9 +63,9 @@ function PureArtifactMessages({
         />
       ))}
 
-      {status === "submitted" &&
+      {status === 'submitted' &&
         messages.length > 0 &&
-        messages.at(-1)?.role === "user" && <ThinkingMessage />}
+        messages.at(-1)?.role === 'user' && <ThinkingMessage />}
 
       <motion.div
         className="min-h-[24px] min-w-[24px] shrink-0"
@@ -82,8 +82,8 @@ function areEqual(
   nextProps: ArtifactMessagesProps
 ) {
   if (
-    prevProps.artifactStatus === "streaming" &&
-    nextProps.artifactStatus === "streaming"
+    prevProps.artifactStatus === 'streaming' &&
+    nextProps.artifactStatus === 'streaming'
   ) {
     return true;
   }

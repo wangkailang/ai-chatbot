@@ -6,10 +6,10 @@
  * Synthesis strategy for combining agent outputs
  */
 export const SynthesisStrategy = {
-  INTERLEAVING: "interleaving", // Interleave sections from different agents
-  LAYERING: "layering", // Stack outputs sequentially
-  HIGHLIGHTING: "highlighting", // Present side-by-side
-  BLENDING: "blending", // Create new content inspired by all agents
+  INTERLEAVING: 'interleaving', // Interleave sections from different agents
+  LAYERING: 'layering', // Stack outputs sequentially
+  HIGHLIGHTING: 'highlighting', // Present side-by-side
+  BLENDING: 'blending', // Create new content inspired by all agents
 } as const;
 
 export type SynthesisStrategy =

@@ -3,16 +3,16 @@
  * These templates can be used as-is or parameterized for specific contexts
  */
 
-import type { RoleDefinition } from "./role-types";
+import type { RoleDefinition } from './role-types';
 
 /**
  * Template for technical expert role
  */
 export const technicalExpertTemplate: RoleDefinition = {
-  id: "technical_expert",
-  name: "Technical Expert",
+  id: 'technical_expert',
+  name: 'Technical Expert',
   description:
-    "Focuses on technical accuracy, detailed explanations, and structured information",
+    'Focuses on technical accuracy, detailed explanations, and structured information',
   promptTemplate: `You are a Technical Expert writer. Your role is to:
 - Provide technically accurate and detailed information
 - Use precise terminology and industry-standard language
@@ -23,8 +23,8 @@ export const technicalExpertTemplate: RoleDefinition = {
 Write content that demonstrates deep technical knowledge while remaining accessible to the target audience.`,
   priority: 1,
   constraints: {
-    tone: "professional",
-    focusAreas: ["accuracy", "detail", "structure"],
+    tone: 'professional',
+    focusAreas: ['accuracy', 'detail', 'structure'],
   },
 };
 
@@ -32,10 +32,10 @@ Write content that demonstrates deep technical knowledge while remaining accessi
  * Template for creative storyteller role
  */
 export const storytellerTemplate: RoleDefinition = {
-  id: "storyteller",
-  name: "Creative Storyteller",
+  id: 'storyteller',
+  name: 'Creative Storyteller',
   description:
-    "Focuses on narrative flow, emotional engagement, and compelling storytelling",
+    'Focuses on narrative flow, emotional engagement, and compelling storytelling',
   promptTemplate: `You are a Creative Storyteller. Your role is to:
 - Craft engaging narratives with strong emotional resonance
 - Use vivid imagery and descriptive language
@@ -46,8 +46,8 @@ export const storytellerTemplate: RoleDefinition = {
 Write content that draws readers in and keeps them engaged through powerful storytelling.`,
   priority: 2,
   constraints: {
-    tone: "engaging",
-    focusAreas: ["narrative", "emotion", "imagery"],
+    tone: 'engaging',
+    focusAreas: ['narrative', 'emotion', 'imagery'],
   },
 };
 
@@ -55,10 +55,10 @@ Write content that draws readers in and keeps them engaged through powerful stor
  * Template for content strategist role
  */
 export const contentStrategistTemplate: RoleDefinition = {
-  id: "content_strategist",
-  name: "Content Strategist",
+  id: 'content_strategist',
+  name: 'Content Strategist',
   description:
-    "Focuses on audience targeting, SEO optimization, and strategic messaging",
+    'Focuses on audience targeting, SEO optimization, and strategic messaging',
   promptTemplate: `You are a Content Strategist. Your role is to:
 - Optimize content for target audience and search engines
 - Ensure clear value propositions and calls-to-action
@@ -69,8 +69,8 @@ export const contentStrategistTemplate: RoleDefinition = {
 Write content that achieves business objectives while serving user needs.`,
   priority: 2,
   constraints: {
-    tone: "strategic",
-    focusAreas: ["audience", "seo", "conversion"],
+    tone: 'strategic',
+    focusAreas: ['audience', 'seo', 'conversion'],
   },
 };
 
@@ -78,9 +78,9 @@ Write content that achieves business objectives while serving user needs.`,
  * Template for editor/refiner role
  */
 export const editorTemplate: RoleDefinition = {
-  id: "editor",
-  name: "Editor",
-  description: "Focuses on clarity, conciseness, grammar, and readability",
+  id: 'editor',
+  name: 'Editor',
+  description: 'Focuses on clarity, conciseness, grammar, and readability',
   promptTemplate: `You are an Editor. Your role is to:
 - Ensure grammatical correctness and proper syntax
 - Improve clarity and conciseness
@@ -91,8 +91,8 @@ export const editorTemplate: RoleDefinition = {
 Write content that is polished, clear, and easy to read.`,
   priority: 3,
   constraints: {
-    tone: "clear",
-    focusAreas: ["clarity", "grammar", "readability"],
+    tone: 'clear',
+    focusAreas: ['clarity', 'grammar', 'readability'],
   },
 };
 
@@ -100,10 +100,10 @@ Write content that is polished, clear, and easy to read.`,
  * Template for subject matter expert role
  */
 export const subjectMatterExpertTemplate: RoleDefinition = {
-  id: "subject_expert",
-  name: "Subject Matter Expert",
+  id: 'subject_expert',
+  name: 'Subject Matter Expert',
   description:
-    "Focuses on domain-specific expertise and authoritative insights",
+    'Focuses on domain-specific expertise and authoritative insights',
   promptTemplate: `You are a Subject Matter Expert. Your role is to:
 - Provide authoritative insights based on deep domain knowledge
 - Reference best practices and industry standards
@@ -114,8 +114,8 @@ export const subjectMatterExpertTemplate: RoleDefinition = {
 Write content that demonstrates expertise and builds trust with knowledgeable audiences.`,
   priority: 1,
   constraints: {
-    tone: "authoritative",
-    focusAreas: ["expertise", "credibility", "depth"],
+    tone: 'authoritative',
+    focusAreas: ['expertise', 'credibility', 'depth'],
   },
 };
 
@@ -123,10 +123,10 @@ Write content that demonstrates expertise and builds trust with knowledgeable au
  * Template for educator role
  */
 export const educatorTemplate: RoleDefinition = {
-  id: "educator",
-  name: "Educator",
+  id: 'educator',
+  name: 'Educator',
   description:
-    "Focuses on teaching, explaining concepts, and learning outcomes",
+    'Focuses on teaching, explaining concepts, and learning outcomes',
   promptTemplate: `You are an Educator. Your role is to:
 - Break down complex concepts into understandable parts
 - Use examples, analogies, and illustrations
@@ -137,8 +137,8 @@ export const educatorTemplate: RoleDefinition = {
 Write content that teaches effectively and helps readers learn and retain information.`,
   priority: 2,
   constraints: {
-    tone: "instructional",
-    focusAreas: ["clarity", "examples", "learning"],
+    tone: 'instructional',
+    focusAreas: ['clarity', 'examples', 'learning'],
   },
 };
 
@@ -146,9 +146,9 @@ Write content that teaches effectively and helps readers learn and retain inform
  * Template for analyst role
  */
 export const analystTemplate: RoleDefinition = {
-  id: "analyst",
-  name: "Analyst",
-  description: "Focuses on data, trends, comparisons, and critical evaluation",
+  id: 'analyst',
+  name: 'Analyst',
+  description: 'Focuses on data, trends, comparisons, and critical evaluation',
   promptTemplate: `You are an Analyst. Your role is to:
 - Present data-driven insights and analysis
 - Compare and contrast different approaches or solutions
@@ -159,8 +159,8 @@ export const analystTemplate: RoleDefinition = {
 Write content that analyzes information critically and provides valuable insights.`,
   priority: 2,
   constraints: {
-    tone: "analytical",
-    focusAreas: ["data", "comparison", "evaluation"],
+    tone: 'analytical',
+    focusAreas: ['data', 'comparison', 'evaluation'],
   },
 };
 
@@ -168,9 +168,9 @@ Write content that analyzes information critically and provides valuable insight
  * Template for marketer role
  */
 export const marketerTemplate: RoleDefinition = {
-  id: "marketer",
-  name: "Marketing Specialist",
-  description: "Focuses on persuasion, benefits, and audience motivation",
+  id: 'marketer',
+  name: 'Marketing Specialist',
+  description: 'Focuses on persuasion, benefits, and audience motivation',
   promptTemplate: `You are a Marketing Specialist. Your role is to:
 - Highlight benefits and value propositions
 - Use persuasive language and compelling hooks
@@ -181,8 +181,8 @@ export const marketerTemplate: RoleDefinition = {
 Write content that persuades and motivates readers to take desired actions.`,
   priority: 2,
   constraints: {
-    tone: "persuasive",
-    focusAreas: ["benefits", "persuasion", "emotion"],
+    tone: 'persuasive',
+    focusAreas: ['benefits', 'persuasion', 'emotion'],
   },
 };
 
@@ -190,9 +190,9 @@ Write content that persuades and motivates readers to take desired actions.`,
  * Template for journalist role
  */
 export const journalistTemplate: RoleDefinition = {
-  id: "journalist",
-  name: "Journalist",
-  description: "Focuses on objectivity, facts, and balanced reporting",
+  id: 'journalist',
+  name: 'Journalist',
+  description: 'Focuses on objectivity, facts, and balanced reporting',
   promptTemplate: `You are a Journalist. Your role is to:
 - Present facts objectively and accurately
 - Use the inverted pyramid structure (most important first)
@@ -203,8 +203,8 @@ export const journalistTemplate: RoleDefinition = {
 Write content that informs readers with accurate, unbiased information.`,
   priority: 1,
   constraints: {
-    tone: "objective",
-    focusAreas: ["facts", "balance", "clarity"],
+    tone: 'objective',
+    focusAreas: ['facts', 'balance', 'clarity'],
   },
 };
 
@@ -212,9 +212,9 @@ Write content that informs readers with accurate, unbiased information.`,
  * Template for researcher role
  */
 export const researcherTemplate: RoleDefinition = {
-  id: "researcher",
-  name: "Researcher",
-  description: "Focuses on evidence, citations, and academic rigor",
+  id: 'researcher',
+  name: 'Researcher',
+  description: 'Focuses on evidence, citations, and academic rigor',
   promptTemplate: `You are a Researcher. Your role is to:
 - Provide well-researched, evidence-based content
 - Reference credible sources and studies
@@ -225,8 +225,8 @@ export const researcherTemplate: RoleDefinition = {
 Write content that is scholarly, well-cited, and intellectually rigorous.`,
   priority: 1,
   constraints: {
-    tone: "academic",
-    focusAreas: ["evidence", "citations", "rigor"],
+    tone: 'academic',
+    focusAreas: ['evidence', 'citations', 'rigor'],
   },
 };
 

@@ -2,11 +2,11 @@
  * LangGraph nodes for the multi-agent writing system
  */
 
-import { agentFactory } from "../agents/writing/dynamic-agent-factory";
-import { analyzeRoles } from "../agents/writing/role-analyzer";
-import { synthesizeOutputs } from "../agents/writing/synthesizer-agent";
-import type { WritingGraphState } from "./types";
-import { SynthesisStrategy } from "./types";
+import { agentFactory } from '../agents/writing/dynamic-agent-factory';
+import { analyzeRoles } from '../agents/writing/role-analyzer';
+import { synthesizeOutputs } from '../agents/writing/synthesizer-agent';
+import type { WritingGraphState } from './types';
+import { SynthesisStrategy } from './types';
 
 /**
  * Role Analyzer Node: Determines optimal writing roles
@@ -22,14 +22,14 @@ export async function roleAnalyzerNode(
 
     return {
       roleAnalysis,
-      currentNode: "role_analyzer",
+      currentNode: 'role_analyzer',
     };
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Unknown error in role analyzer";
+      error instanceof Error ? error.message : 'Unknown error in role analyzer';
     return {
       errors: [errorMessage],
-      currentNode: "role_analyzer",
+      currentNode: 'role_analyzer',
     };
   }
 }
@@ -42,8 +42,8 @@ export async function dynamicAgentExecutorNode(
 ): Promise<Partial<WritingGraphState>> {
   if (!state.roleAnalysis) {
     return {
-      errors: ["No role analysis found"],
-      currentNode: "dynamic_agent_executor",
+      errors: ['No role analysis found'],
+      currentNode: 'dynamic_agent_executor',
     };
   }
 
@@ -65,12 +65,12 @@ export async function dynamicAgentExecutorNode(
     // Collect successful outputs
     const agentOutputs: Record<
       string,
-      WritingGraphState["agentOutputs"][string]
+      WritingGraphState['agentOutputs'][string]
     > = {};
     const errors: string[] = [];
 
     for (const result of results) {
-      if (result.status === "fulfilled") {
+      if (result.status === 'fulfilled') {
         const { roleId, output } = result.value;
         agentOutputs[roleId] = output;
       } else {
@@ -80,7 +80,7 @@ export async function dynamicAgentExecutorNode(
 
     const result: Partial<WritingGraphState> = {
       agentOutputs,
-      currentNode: "dynamic_agent_executor",
+      currentNode: 'dynamic_agent_executor',
     };
 
     if (errors.length > 0) {
@@ -92,10 +92,10 @@ export async function dynamicAgentExecutorNode(
     const errorMessage =
       error instanceof Error
         ? error.message
-        : "Unknown error in agent executor";
+        : 'Unknown error in agent executor';
     return {
       errors: [errorMessage],
-      currentNode: "dynamic_agent_executor",
+      currentNode: 'dynamic_agent_executor',
     };
   }
 }
@@ -111,8 +111,8 @@ export async function synthesizerNode(
 
     if (agentOutputsArray.length === 0) {
       return {
-        errors: ["No agent outputs to synthesize"],
-        currentNode: "synthesizer",
+        errors: ['No agent outputs to synthesize'],
+        currentNode: 'synthesizer',
       };
     }
 
@@ -128,14 +128,14 @@ export async function synthesizerNode(
     return {
       synthesizedContent: content,
       finalReasoning: reasoning,
-      currentNode: "synthesizer",
+      currentNode: 'synthesizer',
     };
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Unknown error in synthesizer";
+      error instanceof Error ? error.message : 'Unknown error in synthesizer';
     return {
       errors: [errorMessage],
-      currentNode: "synthesizer",
+      currentNode: 'synthesizer',
     };
   }
 }
@@ -146,11 +146,11 @@ export async function synthesizerNode(
 export function errorHandlerNode(
   state: WritingGraphState
 ): Partial<WritingGraphState> {
-  const errorMessage = state.errors.join("; ");
+  const errorMessage = state.errors.join('; ');
 
   return {
     synthesizedContent: `An error occurred during content generation: ${errorMessage}`,
-    finalReasoning: "Error occurred, returning error message",
-    currentNode: "error_handler",
+    finalReasoning: 'Error occurred, returning error message',
+    currentNode: 'error_handler',
   };
 }

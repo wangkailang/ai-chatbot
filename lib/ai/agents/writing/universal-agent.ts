@@ -2,14 +2,14 @@
  * Universal Writing Agent: Adapts to any role definition
  */
 
-import type { UserConstraints } from "@/lib/ai/langgraph/types";
-import { myProvider } from "@/lib/ai/providers";
-import { generateText } from "@/lib/utils/geterate";
+import type { UserConstraints } from '@/lib/ai/langgraph/types';
+import { myProvider } from '@/lib/ai/providers';
+import { generateText } from '@/lib/utils/geterate';
 import {
   type AgentOutput,
   AgentOutputSchema,
   type RoleDefinition,
-} from "./role-types";
+} from './role-types';
 
 const DEFAULT_TIMEOUT = 30_000; // 30 seconds
 
@@ -69,7 +69,7 @@ export class UniversalWritingAgent {
     prompt: string
   ): Promise<{ text: string; reasoning?: string }> {
     const result = await generateText({
-      model: myProvider.languageModel("chat-model"),
+      model: myProvider.languageModel('chat-model'),
       system: this.roleDefinition.promptTemplate,
       prompt,
       temperature: 0.7,
@@ -77,8 +77,8 @@ export class UniversalWritingAgent {
 
     const reasoningText =
       result.reasoning && result.reasoning.length > 0
-        ? result.reasoning.map((r) => r.text).join("\n")
-        : "";
+        ? result.reasoning.map((r) => r.text).join('\n')
+        : '';
 
     return {
       text: result.text,
@@ -112,7 +112,7 @@ export class UniversalWritingAgent {
 
     // Add role-specific constraints
     if (this.roleDefinition.constraints) {
-      prompt += "\n\nRole-specific guidelines:";
+      prompt += '\n\nRole-specific guidelines:';
 
       if (this.roleDefinition.constraints.tone) {
         prompt += `\n- Tone: ${this.roleDefinition.constraints.tone}`;
@@ -122,13 +122,13 @@ export class UniversalWritingAgent {
         this.roleDefinition.constraints.focusAreas &&
         this.roleDefinition.constraints.focusAreas.length > 0
       ) {
-        prompt += `\n- Focus on: ${this.roleDefinition.constraints.focusAreas.join(", ")}`;
+        prompt += `\n- Focus on: ${this.roleDefinition.constraints.focusAreas.join(', ')}`;
       }
     }
 
     // Add user constraints
     if (constraints) {
-      prompt += "\n\nAdditional requirements:";
+      prompt += '\n\nAdditional requirements:';
 
       if (constraints.maxLength) {
         prompt += `\n- Maximum length: approximately ${Math.floor(constraints.maxLength / 4)} words`;
@@ -144,7 +144,7 @@ export class UniversalWritingAgent {
     }
 
     prompt +=
-      "\n\nProvide well-structured markdown content that fulfills your role.";
+      '\n\nProvide well-structured markdown content that fulfills your role.';
 
     return prompt;
   }

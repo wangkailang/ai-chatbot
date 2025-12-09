@@ -1,6 +1,6 @@
-import { toast } from "sonner";
-import { CodeEditor } from "@/components/code-editor";
-import { Artifact } from "@/components/create-artifact";
+import { toast } from 'sonner';
+import { CodeEditor } from '@/components/code-editor';
+import { Artifact } from '@/components/create-artifact';
 import {
   CopyIcon,
   LogsIcon,
@@ -8,50 +8,48 @@ import {
   PlayIcon,
   RedoIcon,
   UndoIcon,
-} from "@/components/icons";
+} from '@/components/icons';
 
-export const codeArtifact = new Artifact<"code">({
-  kind: "code",
+export const codeArtifact = new Artifact<'code'>({
+  kind: 'code',
   description:
-    "Useful for generating reusable React + TypeScript snippets styled with Tailwind.",
+    'Useful for generating reusable React + TypeScript snippets styled with Tailwind.',
   onStreamPart: ({ streamPart, setArtifact }) => {
-    if (streamPart.type === "data-codeDelta") {
+    if (streamPart.type === 'data-codeDelta') {
       setArtifact((draftArtifact) => ({
         ...draftArtifact,
         content: streamPart.data,
         isVisible:
-          draftArtifact.status === "streaming" &&
+          draftArtifact.status === 'streaming' &&
           draftArtifact.content.length > 300 &&
           draftArtifact.content.length < 310
             ? true
             : draftArtifact.isVisible,
-        status: "streaming",
+        status: 'streaming',
       }));
     }
   },
-  content: ({ metadata: _metadata, setMetadata: _setMetadata, ...props }) => {
-    return (
-      <div className="px-1">
-        <CodeEditor {...props} />
-      </div>
-    );
-  },
+  content: ({ metadata: _metadata, setMetadata: _setMetadata, ...props }) => (
+    <div className="px-1">
+      <CodeEditor {...props} />
+    </div>
+  ),
   actions: [
     {
       icon: <PlayIcon size={18} />,
-      label: "Preview guidance",
-      description: "Learn how to try the snippet",
+      label: 'Preview guidance',
+      description: 'Learn how to try the snippet',
       onClick: () => {
         toast.info(
-          "React snippets are ready to paste into your project. Use Storybook or Next.js pages to preview them."
+          'React snippets are ready to paste into your project. Use Storybook or Next.js pages to preview them.'
         );
       },
     },
     {
       icon: <UndoIcon size={18} />,
-      description: "View Previous version",
+      description: 'View Previous version',
       onClick: ({ handleVersionChange }) => {
-        handleVersionChange("prev");
+        handleVersionChange('prev');
       },
       isDisabled: ({ currentVersionIndex }) => {
         if (currentVersionIndex === 0) {
@@ -63,9 +61,9 @@ export const codeArtifact = new Artifact<"code">({
     },
     {
       icon: <RedoIcon size={18} />,
-      description: "View Next version",
+      description: 'View Next version',
       onClick: ({ handleVersionChange }) => {
-        handleVersionChange("next");
+        handleVersionChange('next');
       },
       isDisabled: ({ isCurrentVersion }) => {
         if (isCurrentVersion) {
@@ -77,24 +75,24 @@ export const codeArtifact = new Artifact<"code">({
     },
     {
       icon: <CopyIcon size={18} />,
-      description: "Copy code to clipboard",
+      description: 'Copy code to clipboard',
       onClick: ({ content }) => {
         navigator.clipboard.writeText(content);
-        toast.success("Copied to clipboard!");
+        toast.success('Copied to clipboard!');
       },
     },
   ],
   toolbar: [
     {
       icon: <MessageIcon />,
-      description: "Add comments",
+      description: 'Add comments',
       onClick: ({ sendMessage }) => {
         sendMessage({
-          role: "user",
+          role: 'user',
           parts: [
             {
-              type: "text",
-              text: "Add comments to the code snippet for understanding",
+              type: 'text',
+              text: 'Add comments to the code snippet for understanding',
             },
           ],
         });
@@ -102,14 +100,14 @@ export const codeArtifact = new Artifact<"code">({
     },
     {
       icon: <LogsIcon />,
-      description: "Add logs",
+      description: 'Add logs',
       onClick: ({ sendMessage }) => {
         sendMessage({
-          role: "user",
+          role: 'user',
           parts: [
             {
-              type: "text",
-              text: "Add logs to the code snippet for debugging",
+              type: 'text',
+              text: 'Add logs to the code snippet for debugging',
             },
           ],
         });

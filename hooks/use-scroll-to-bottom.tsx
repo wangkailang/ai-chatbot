@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import useSWR from "swr";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import useSWR from 'swr';
 
 type ScrollFlag = ScrollBehavior | false;
 
@@ -9,7 +9,7 @@ export function useScrollToBottom() {
   const [isAtBottom, setIsAtBottom] = useState(true);
 
   const { data: scrollBehavior = false, mutate: setScrollBehavior } =
-    useSWR<ScrollFlag>("messages:should-scroll", null, { fallbackData: false });
+    useSWR<ScrollFlag>('messages:should-scroll', null, { fallbackData: false });
 
   const handleScroll = useCallback(() => {
     if (!containerRef.current) {
@@ -47,7 +47,7 @@ export function useScrollToBottom() {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ["style", "class", "data-state"],
+      attributeFilter: ['style', 'class', 'data-state'],
     });
 
     handleScroll();
@@ -64,11 +64,11 @@ export function useScrollToBottom() {
       return;
     }
 
-    container.addEventListener("scroll", handleScroll);
+    container.addEventListener('scroll', handleScroll);
     handleScroll(); // Check initial state
 
     return () => {
-      container.removeEventListener("scroll", handleScroll);
+      container.removeEventListener('scroll', handleScroll);
     };
   }, [handleScroll]);
 
@@ -85,7 +85,7 @@ export function useScrollToBottom() {
   }, [scrollBehavior, setScrollBehavior]);
 
   const scrollToBottom = useCallback(
-    (currentScrollBehavior: ScrollBehavior = "smooth") => {
+    (currentScrollBehavior: ScrollBehavior = 'smooth') => {
       setScrollBehavior(currentScrollBehavior);
     },
     [setScrollBehavior]

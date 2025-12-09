@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite"],
+  "extends": ["ultracite/core"],
   "files": {
     "includes": [
       "**/*",
@@ -8,6 +8,11 @@
       "!lib/utils.ts",
       "!hooks/use-mobile.ts"
     ]
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
   },
   "linter": {
     "rules": {
@@ -29,11 +34,19 @@
         "noMagicNumbers": "off",
 
         /* Needs more work to fix */
-        "noNestedTernary": "off"
+        "noNestedTernary": "off",
+
+        "useTemplate": "off"
       },
       "nursery": {
         /* Too many false positives */
-        "noUnnecessaryConditions": "off"
+        "noUnnecessaryConditions": "off",
+
+        /* Common React pattern, too many false positives */
+        "noLeakedRender": "off",
+
+        /* Helper scripts may have disabled execution */
+        "noEmptySource": "off"
       },
       "complexity": {
         /* Needs more work to fix */

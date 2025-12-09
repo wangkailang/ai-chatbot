@@ -2,10 +2,10 @@
  * Synthesizer Agent: Combines outputs from multiple agents into cohesive content
  */
 
-import { SynthesisStrategy } from "@/lib/ai/langgraph/types";
-import { myProvider } from "@/lib/ai/providers";
-import { generateText } from "@/lib/utils/geterate";
-import type { AgentOutput } from "./role-types";
+import { SynthesisStrategy } from '@/lib/ai/langgraph/types';
+import { myProvider } from '@/lib/ai/providers';
+import { generateText } from '@/lib/utils/geterate';
+import type { AgentOutput } from './role-types';
 
 /**
  * System prompt for the synthesizer
@@ -36,7 +36,7 @@ export async function synthesizeOutputs(
   strategy: SynthesisStrategy = SynthesisStrategy.BLENDING
 ): Promise<{ content: string; reasoning: string }> {
   if (agentOutputs.length === 0) {
-    throw new Error("No agent outputs to synthesize");
+    throw new Error('No agent outputs to synthesize');
   }
 
   if (agentOutputs.length === 1) {
@@ -49,7 +49,7 @@ export async function synthesizeOutputs(
   const prompt = buildSynthesisPrompt(agentOutputs, userRequest, strategy);
 
   const result = await generateText({
-    model: myProvider.languageModel("chat-model"),
+    model: myProvider.languageModel('chat-model'),
     system: SYNTHESIZER_SYSTEM_PROMPT,
     prompt,
     temperature: 0.7,
@@ -57,8 +57,8 @@ export async function synthesizeOutputs(
 
   const reasoningText =
     result.reasoning && result.reasoning.length > 0
-      ? result.reasoning.map((r) => r.text).join("\n")
-      : "";
+      ? result.reasoning.map((r) => r.text).join('\n')
+      : '';
 
   return {
     content: result.text,

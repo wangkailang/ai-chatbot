@@ -2,11 +2,11 @@
  * Role Analyzer: AI-powered analysis to determine optimal writing roles
  */
 
-import { generateObject } from "ai";
-import type { UserConstraints } from "@/lib/ai/langgraph/types";
-import { myProvider } from "@/lib/ai/providers";
-import { roleTemplates } from "./role-templates";
-import { type RoleAnalysis, RoleAnalysisSchema } from "./role-types";
+import { generateObject } from 'ai';
+import type { UserConstraints } from '@/lib/ai/langgraph/types';
+import { myProvider } from '@/lib/ai/providers';
+import { roleTemplates } from './role-templates';
+import { type RoleAnalysis, RoleAnalysisSchema } from './role-types';
 
 const DEFAULT_MIN_ROLES = 2;
 const DEFAULT_MAX_ROLES = 4;
@@ -31,7 +31,7 @@ Your task is to:
 Available role templates you can use or adapt:
 ${Object.entries(roleTemplates)
   .map(([id, template]) => `- ${id}: ${template.description}`)
-  .join("\n")}
+  .join('\n')}
 
 You can use these templates as-is or create custom roles based on the specific request.
 
@@ -60,7 +60,7 @@ export async function analyzeRoles(
 
   try {
     const result = await generateObject({
-      model: myProvider.languageModel("chat-model"),
+      model: myProvider.languageModel('chat-model'),
       system: ROLE_ANALYZER_SYSTEM_PROMPT,
       prompt: userPrompt,
       schema: RoleAnalysisSchema,
@@ -68,7 +68,7 @@ export async function analyzeRoles(
     });
 
     if (!result.object) {
-      throw new Error("No object generated from role analysis");
+      throw new Error('No object generated from role analysis');
     }
 
     const object = result.object;
@@ -89,26 +89,26 @@ export async function analyzeRoles(
 
     return object;
   } catch (error) {
-    console.error("Role analysis error:", error);
+    console.error('Role analysis error:', error);
     // Fallback to default roles if analysis fails
     return {
       identifiedRoles: [
         {
-          id: "content_writer",
-          name: "Content Writer",
-          description: "Professional content writer with broad expertise",
+          id: 'content_writer',
+          name: 'Content Writer',
+          description: 'Professional content writer with broad expertise',
           promptTemplate: `You are a professional content writer. Create high-quality content for: ${userRequest}`,
           priority: 1,
         },
         {
-          id: "editor",
-          name: "Editor",
-          description: "Editorial expert ensuring clarity and quality",
+          id: 'editor',
+          name: 'Editor',
+          description: 'Editorial expert ensuring clarity and quality',
           promptTemplate: `You are an experienced editor. Review and refine content for: ${userRequest}`,
           priority: 2,
         },
       ],
-      reasoning: "Using fallback roles due to analysis error",
+      reasoning: 'Using fallback roles due to analysis error',
       confidence: 0.5,
     };
   }
@@ -124,7 +124,7 @@ function buildUserPrompt(
   let prompt = `Analyze this writing request and identify optimal roles. Return the result as a JSON object:\n\nRequest: ${userRequest}`;
 
   if (constraints) {
-    prompt += "\n\nConstraints:";
+    prompt += '\n\nConstraints:';
 
     if (constraints.maxLength) {
       prompt += `\n- Maximum length: ${constraints.maxLength} characters`;
@@ -139,9 +139,9 @@ function buildUserPrompt(
     }
 
     if (constraints.preferredRoles && constraints.preferredRoles.length > 0) {
-      prompt += `\n- User suggested roles: ${constraints.preferredRoles.join(", ")}`;
+      prompt += `\n- User suggested roles: ${constraints.preferredRoles.join(', ')}`;
       prompt +=
-        "\n  (Consider these suggestions but optimize as needed for best results)";
+        '\n  (Consider these suggestions but optimize as needed for best results)';
     }
   }
 
@@ -196,18 +196,18 @@ export function validateRoleAnalysis(analysis: RoleAnalysis): {
   const roleIds = analysis.identifiedRoles.map((r) => r.id);
   const uniqueIds = new Set(roleIds);
   if (roleIds.length !== uniqueIds.size) {
-    errors.push("Role IDs must be unique");
+    errors.push('Role IDs must be unique');
   }
 
   // Check confidence score
   if (analysis.confidence < 0 || analysis.confidence > 1) {
-    errors.push("Confidence must be between 0.0 and 1.0");
+    errors.push('Confidence must be between 0.0 and 1.0');
   }
 
   // Check each role has required fields
   for (const role of analysis.identifiedRoles) {
     if (!role.id || !role.name || !role.description || !role.promptTemplate) {
-      errors.push(`Role ${role.id || "unknown"} is missing required fields`);
+      errors.push(`Role ${role.id || 'unknown'} is missing required fields`);
     }
   }
 

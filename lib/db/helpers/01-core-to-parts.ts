@@ -251,3 +251,5 @@
 //     console.error('Script failed:', error);
 //     process.exit(1);
 //   });
+
+// Script execution disabled - uncomment above to run
