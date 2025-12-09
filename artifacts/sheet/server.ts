@@ -1,35 +1,35 @@
-import { streamObject } from "ai";
-import { z } from "zod";
-import { sheetPrompt, updateDocumentPrompt } from "@/lib/ai/prompts";
-import { myProvider } from "@/lib/ai/providers";
-import { createDocumentHandler } from "@/lib/artifacts/server";
+import { streamObject } from 'ai';
+import { z } from 'zod';
+import { sheetPrompt, updateDocumentPrompt } from '@/lib/ai/prompts';
+import { myProvider } from '@/lib/ai/providers';
+import { createDocumentHandler } from '@/lib/artifacts/server';
 
-export const sheetDocumentHandler = createDocumentHandler<"sheet">({
-  kind: "sheet",
+export const sheetDocumentHandler = createDocumentHandler<'sheet'>({
+  kind: 'sheet',
   onCreateDocument: async ({ title, dataStream }) => {
-    let draftContent = "";
+    let draftContent = '';
 
     const promptWithFormatHint = `${title}\n\nReturn a json object that matches the provided schema.`;
 
     const { fullStream } = streamObject({
-      model: myProvider.languageModel("artifact-model"),
+      model: myProvider.languageModel('artifact-model'),
       system: sheetPrompt,
       prompt: promptWithFormatHint,
       schema: z.object({
-        csv: z.string().describe("CSV data"),
+        csv: z.string().describe('CSV data'),
       }),
     });
 
     for await (const delta of fullStream) {
       const { type } = delta;
 
-      if (type === "object") {
+      if (type === 'object') {
         const { object } = delta;
         const { csv } = object;
 
         if (csv) {
           dataStream.write({
-            type: "data-sheetDelta",
+            type: 'data-sheetDelta',
             data: csv,
             transient: true,
           });
@@ -40,7 +40,7 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
     }
 
     dataStream.write({
-      type: "data-sheetDelta",
+      type: 'data-sheetDelta',
       data: draftContent,
       transient: true,
     });
@@ -48,13 +48,13 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
     return draftContent;
   },
   onUpdateDocument: async ({ document, description, dataStream }) => {
-    let draftContent = "";
+    let draftContent = '';
 
     const promptWithFormatHint = `${description}\n\nReturn a json object that matches the provided schema.`;
 
     const { fullStream } = streamObject({
-      model: myProvider.languageModel("artifact-model"),
-      system: updateDocumentPrompt(document.content, "sheet"),
+      model: myProvider.languageModel('artifact-model'),
+      system: updateDocumentPrompt(document.content, 'sheet'),
       prompt: promptWithFormatHint,
       schema: z.object({
         csv: z.string(),
@@ -64,13 +64,13 @@ export const sheetDocumentHandler = createDocumentHandler<"sheet">({
     for await (const delta of fullStream) {
       const { type } = delta;
 
-      if (type === "object") {
+      if (type === 'object') {
         const { object } = delta;
         const { csv } = object;
 
         if (csv) {
           dataStream.write({
-            type: "data-sheetDelta",
+            type: 'data-sheetDelta',
             data: csv,
             transient: true,
           });

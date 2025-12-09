@@ -4,8 +4,8 @@ import {
   streamObject,
   streamText,
   wrapLanguageModel,
-} from "ai";
-import { wrapAISDK } from "langsmith/experimental/vercel";
+} from 'ai';
+import { wrapAISDK } from 'langsmith/experimental/vercel';
 
 export const generateText = wrapAISDK({
   generateText: aiGenerateText,

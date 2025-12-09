@@ -1,29 +1,29 @@
-import { tool } from "ai";
-import { z } from "zod";
-import { formatMultiAgentOutput } from "@/lib/ai/formatters/multi-agent-output";
+import { tool } from 'ai';
+import { z } from 'zod';
+import { formatMultiAgentOutput } from '@/lib/ai/formatters/multi-agent-output';
 import {
   createInitialState,
   executeWritingWorkflow,
-} from "@/lib/ai/langgraph/graph";
-import { SynthesisStrategy } from "@/lib/ai/langgraph/types";
+} from '@/lib/ai/langgraph/graph';
+import { SynthesisStrategy } from '@/lib/ai/langgraph/types';
 
 export const multiAgentWriting = tool({
   description:
-    "Use multiple AI agents to collaboratively write high-quality content. " +
-    "The system automatically identifies 2-4 specialized roles (like technical expert, storyteller, editor, etc.) " +
-    "based on the writing request, then combines their outputs into cohesive content. " +
-    "Best for: articles, documentation, marketing content, reports, creative writing, etc. " +
-    "IMPORTANT: After using this tool, you should call createDocument to save the generated content as a document artifact.",
+    'Use multiple AI agents to collaboratively write high-quality content. ' +
+    'The system automatically identifies 2-4 specialized roles (like technical expert, storyteller, editor, etc.) ' +
+    'based on the writing request, then combines their outputs into cohesive content. ' +
+    'Best for: articles, documentation, marketing content, reports, creative writing, etc. ' +
+    'IMPORTANT: After using this tool, you should call createDocument to save the generated content as a document artifact.',
   inputSchema: z.object({
     request: z
       .string()
       .describe(
-        "The detailed writing request describing what content to create"
+        'The detailed writing request describing what content to create'
       ),
     tone: z
-      .enum(["professional", "casual", "technical", "creative", "academic"])
+      .enum(['professional', 'casual', 'technical', 'creative', 'academic'])
       .optional()
-      .describe("The desired tone of the content"),
+      .describe('The desired tone of the content'),
     targetAudience: z
       .string()
       .optional()
@@ -33,7 +33,7 @@ export const multiAgentWriting = tool({
     maxLength: z
       .number()
       .optional()
-      .describe("Maximum length in words (approximate)"),
+      .describe('Maximum length in words (approximate)'),
     synthesisStrategy: z
       .enum([
         SynthesisStrategy.INTERLEAVING,
@@ -43,9 +43,9 @@ export const multiAgentWriting = tool({
       ])
       .optional()
       .describe(
-        "How to combine agent outputs: " +
-          "interleaving (mix sections), layering (stack sequentially), " +
-          "highlighting (present distinctly), blending (unified narrative)"
+        'How to combine agent outputs: ' +
+          'interleaving (mix sections), layering (stack sequentially), ' +
+          'highlighting (present distinctly), blending (unified narrative)'
       ),
   }),
   execute: async ({
@@ -76,7 +76,7 @@ export const multiAgentWriting = tool({
         success: true,
         content: output.finalContent,
         metadata: {
-          roles: output.identifiedRoles.map((role) => role.name).join(", "),
+          roles: output.identifiedRoles.map((role) => role.name).join(', '),
           strategy: output.metadata.synthesisStrategy,
           duration: output.metadata.duration,
           agents: Object.entries(output.agents).map(([_id, agent]) => ({
@@ -85,19 +85,19 @@ export const multiAgentWriting = tool({
           })),
         },
         suggestedNextAction: {
-          tool: "createDocument",
+          tool: 'createDocument',
           reason:
-            "The multi-agent content has been generated. You should now create a document to save this content.",
+            'The multi-agent content has been generated. You should now create a document to save this content.',
         },
       };
     } catch (error) {
-      console.error("Multi-agent writing error:", error);
+      console.error('Multi-agent writing error:', error);
       return {
         success: false,
         error:
           error instanceof Error
             ? error.message
-            : "Failed to generate content with multi-agent system",
+            : 'Failed to generate content with multi-agent system',
       };
     }
   },

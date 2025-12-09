@@ -1,10 +1,10 @@
-import { deepseek } from "@ai-sdk/deepseek";
+import { deepseek } from '@ai-sdk/deepseek';
 import {
   customProvider,
   extractReasoningMiddleware,
   wrapLanguageModel,
-} from "ai";
-import { isTestEnvironment } from "../constants";
+} from 'ai';
+import { isTestEnvironment } from '../constants';
 
 export const myProvider = isTestEnvironment
   ? (() => {
@@ -13,24 +13,24 @@ export const myProvider = isTestEnvironment
         chatModel,
         reasoningModel,
         titleModel,
-      } = require("./models.mock");
+      } = require('./models.mock');
       return customProvider({
         languageModels: {
-          "chat-model": chatModel,
-          "chat-model-reasoning": reasoningModel,
-          "title-model": titleModel,
-          "artifact-model": artifactModel,
+          'chat-model': chatModel,
+          'chat-model-reasoning': reasoningModel,
+          'title-model': titleModel,
+          'artifact-model': artifactModel,
         },
       });
     })()
   : customProvider({
       languageModels: {
-        "chat-model": deepseek("deepseek-chat"),
-        "chat-model-reasoning": wrapLanguageModel({
-          model: deepseek("deepseek-reasoner"),
-          middleware: extractReasoningMiddleware({ tagName: "think" }),
+        'chat-model': deepseek('deepseek-chat'),
+        'chat-model-reasoning': wrapLanguageModel({
+          model: deepseek('deepseek-reasoner'),
+          middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        "title-model": deepseek("deepseek-chat"),
-        "artifact-model": deepseek("deepseek-chat"),
+        'title-model': deepseek('deepseek-chat'),
+        'artifact-model': deepseek('deepseek-chat'),
       },
     });

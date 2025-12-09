@@ -9,6 +9,11 @@
       "!hooks/use-mobile.ts"
     ]
   },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
   "linter": {
     "rules": {
       "suspicious": {

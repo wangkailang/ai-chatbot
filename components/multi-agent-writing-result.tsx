@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { CheckCircle2Icon, SparklesIcon, UsersIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { CheckCircle2Icon, SparklesIcon, UsersIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 type MultiAgentWritingOutput = {
   success: boolean;
@@ -27,7 +27,7 @@ export function MultiAgentWritingResult({
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-600 dark:border-red-900 dark:bg-red-950/50">
         <p className="font-medium text-sm">Multi-Agent Writing Error</p>
-        <p className="mt-1 text-sm">{output.error || "Unknown error"}</p>
+        <p className="mt-1 text-sm">{output.error || 'Unknown error'}</p>
       </div>
     );
   }
@@ -39,7 +39,7 @@ export function MultiAgentWritingResult({
   }
 
   const rolesArray = metadata.roles
-    ? metadata.roles.split(", ").filter((r) => r.trim())
+    ? metadata.roles.split(', ').filter((r) => r.trim())
     : [];
 
   return (

@@ -2,8 +2,8 @@
  * Request and response schemas for multi-agent writing API
  */
 
-import { z } from "zod";
-import { SynthesisStrategy } from "@/lib/ai/langgraph/types";
+import { z } from 'zod';
+import { SynthesisStrategy } from '@/lib/ai/langgraph/types';
 
 /**
  * Request schema

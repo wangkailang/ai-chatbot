@@ -1,18 +1,18 @@
-import { streamObject } from "ai";
-import { z } from "zod";
-import { codePrompt, updateDocumentPrompt } from "@/lib/ai/prompts";
-import { myProvider } from "@/lib/ai/providers";
-import { createDocumentHandler } from "@/lib/artifacts/server";
+import { streamObject } from 'ai';
+import { z } from 'zod';
+import { codePrompt, updateDocumentPrompt } from '@/lib/ai/prompts';
+import { myProvider } from '@/lib/ai/providers';
+import { createDocumentHandler } from '@/lib/artifacts/server';
 
-export const codeDocumentHandler = createDocumentHandler<"code">({
-  kind: "code",
+export const codeDocumentHandler = createDocumentHandler<'code'>({
+  kind: 'code',
   onCreateDocument: async ({ title, dataStream }) => {
-    let draftContent = "";
+    let draftContent = '';
 
     const promptWithFormatHint = `${title}\n\nReturn a json object that matches the provided schema.`;
 
     const { fullStream } = streamObject({
-      model: myProvider.languageModel("artifact-model"),
+      model: myProvider.languageModel('artifact-model'),
       system: codePrompt,
       prompt: promptWithFormatHint,
       schema: z.object({
@@ -23,14 +23,14 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
     for await (const delta of fullStream) {
       const { type } = delta;
 
-      if (type === "object") {
+      if (type === 'object') {
         const { object } = delta;
         const { code } = object;
 
         if (code) {
           dataStream.write({
-            type: "data-codeDelta",
-            data: code ?? "",
+            type: 'data-codeDelta',
+            data: code ?? '',
             transient: true,
           });
 
@@ -42,13 +42,13 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
     return draftContent;
   },
   onUpdateDocument: async ({ document, description, dataStream }) => {
-    let draftContent = "";
+    let draftContent = '';
 
     const promptWithFormatHint = `${description}\n\nReturn a json object that matches the provided schema.`;
 
     const { fullStream } = streamObject({
-      model: myProvider.languageModel("artifact-model"),
-      system: updateDocumentPrompt(document.content, "code"),
+      model: myProvider.languageModel('artifact-model'),
+      system: updateDocumentPrompt(document.content, 'code'),
       prompt: promptWithFormatHint,
       schema: z.object({
         code: z.string(),
@@ -58,14 +58,14 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
     for await (const delta of fullStream) {
       const { type } = delta;
 
-      if (type === "object") {
+      if (type === 'object') {
         const { object } = delta;
         const { code } = object;
 
         if (code) {
           dataStream.write({
-            type: "data-codeDelta",
-            data: code ?? "",
+            type: 'data-codeDelta',
+            data: code ?? '',
             transient: true,
           });
 

@@ -3,14 +3,14 @@
  * POST /api/multi-agent-writing
  */
 
-import { NextResponse } from "next/server";
-import { auth } from "@/app/(auth)/auth";
-import { formatMultiAgentOutput } from "@/lib/ai/formatters/multi-agent-output";
+import { NextResponse } from 'next/server';
+import { auth } from '@/app/(auth)/auth';
+import { formatMultiAgentOutput } from '@/lib/ai/formatters/multi-agent-output';
 import {
   createInitialState,
   executeWritingWorkflow,
-} from "@/lib/ai/langgraph/graph";
-import { MultiAgentWritingRequestSchema } from "./schema";
+} from '@/lib/ai/langgraph/graph';
+import { MultiAgentWritingRequestSchema } from './schema';
 
 export async function POST(request: Request) {
   const startTime = Date.now();
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     // Check authentication
     const session = await auth();
     if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Parse and validate request body
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     if (!parseResult.success) {
       return NextResponse.json(
         {
-          error: "Invalid request",
+          error: 'Invalid request',
           details: parseResult.error.errors,
         },
         { status: 400 }
@@ -53,19 +53,19 @@ export async function POST(request: Request) {
     // Return response
     return NextResponse.json(output, {
       headers: {
-        "Content-Type": "application/json",
-        "X-Response-Time": `${responseTime}ms`,
+        'Content-Type': 'application/json',
+        'X-Response-Time': `${responseTime}ms`,
       },
     });
   } catch (error) {
-    console.error("Multi-agent writing error:", error);
+    console.error('Multi-agent writing error:', error);
 
     const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
+      error instanceof Error ? error.message : 'Unknown error occurred';
 
     return NextResponse.json(
       {
-        error: "Internal server error",
+        error: 'Internal server error',
         message: errorMessage,
       },
       { status: 500 }

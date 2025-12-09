@@ -2,8 +2,8 @@
  * Dynamic Agent Factory: Creates agents on-demand based on role definitions
  */
 
-import type { RoleDefinition } from "./role-types";
-import { UniversalWritingAgent } from "./universal-agent";
+import type { RoleDefinition } from './role-types';
+import { UniversalWritingAgent } from './universal-agent';
 
 /**
  * Factory for creating dynamic agents

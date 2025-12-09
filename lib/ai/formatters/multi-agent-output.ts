@@ -2,8 +2,8 @@
  * Output formatter for multi-agent writing results
  */
 
-import { z } from "zod";
-import type { WritingGraphState } from "@/lib/ai/langgraph/types";
+import { z } from 'zod';
+import type { WritingGraphState } from '@/lib/ai/langgraph/types';
 
 /**
  * Output schema for API response
@@ -61,12 +61,12 @@ export function formatMultiAgentOutput(
     })) || [];
 
   const roleAnalysis = {
-    reasoning: state.roleAnalysis?.reasoning || "No analysis available",
+    reasoning: state.roleAnalysis?.reasoning || 'No analysis available',
     confidence: state.roleAnalysis?.confidence || 0,
   };
 
   // Format agent contributions
-  const agents: Record<string, MultiAgentOutput["agents"][string]> = {};
+  const agents: Record<string, MultiAgentOutput['agents'][string]> = {};
   for (const [roleId, output] of Object.entries(state.agentOutputs)) {
     agents[roleId] = {
       roleName: output.roleName,
@@ -79,7 +79,7 @@ export function formatMultiAgentOutput(
 
   // Get synthesis strategy
   const synthesisStrategy =
-    state.userConstraints?.synthesisStrategy || "blending";
+    state.userConstraints?.synthesisStrategy || 'blending';
 
   return {
     id: state.graphExecutionId,
@@ -88,7 +88,7 @@ export function formatMultiAgentOutput(
     identifiedRoles,
     roleAnalysis,
     agents,
-    finalContent: state.synthesizedContent || "",
+    finalContent: state.synthesizedContent || '',
     metadata: {
       duration,
       graphExecutionId: state.graphExecutionId,
