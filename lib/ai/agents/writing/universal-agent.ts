@@ -49,7 +49,8 @@ export class UniversalWritingAgent {
       roleName: this.roleDefinition.name,
       roleDescription: this.roleDefinition.description,
       content: text,
-      reasoningText: reasoning || `Generated as ${this.roleDefinition.name}`,
+      reasoningText:
+        reasoningText || `Generated as ${this.roleDefinition.name}`,
       confidence: 0.8, // Default confidence, could be enhanced with model feedback
       metadata: {
         priority: this.roleDefinition.priority,
@@ -82,7 +83,7 @@ export class UniversalWritingAgent {
 
     return {
       text: result.text,
-      reasoningText: reasoningText,
+      reasoningText,
     };
   }
 
