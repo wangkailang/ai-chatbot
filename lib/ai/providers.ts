@@ -1,10 +1,39 @@
 import { deepseek } from '@ai-sdk/deepseek';
+import { devToolsMiddleware } from '@ai-sdk/devtools';
 import {
   customProvider,
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
 import { isTestEnvironment } from '../constants';
+
+const isDev = process.env.NODE_ENV === 'development';
+
+// biome-ignore lint/suspicious/noExplicitAny: V2/V3 type compatibility workaround
+function wrapModel(model: any, middleware?: any): any {
+  const middlewares: any[] = [];
+
+  if (middleware) {
+    if (Array.isArray(middleware)) {
+      middlewares.push(...middleware);
+    } else {
+      middlewares.push(middleware);
+    }
+  }
+
+  if (isDev) {
+    middlewares.push(devToolsMiddleware());
+  }
+
+  if (middlewares.length === 0) {
+    return model;
+  }
+
+  return wrapLanguageModel({
+    model,
+    middleware: middlewares.length === 1 ? middlewares[0] : middlewares,
+  });
+}
 
 export const myProvider = isTestEnvironment
   ? (() => {
@@ -25,12 +54,12 @@ export const myProvider = isTestEnvironment
     })()
   : customProvider({
       languageModels: {
-        'chat-model': deepseek('deepseek-chat'),
-        'chat-model-reasoning': wrapLanguageModel({
-          model: deepseek('deepseek-reasoner'),
-          middleware: extractReasoningMiddleware({ tagName: 'think' }),
-        }),
-        'title-model': deepseek('deepseek-chat'),
-        'artifact-model': deepseek('deepseek-chat'),
+        'chat-model': wrapModel(deepseek('deepseek-chat')),
+        'chat-model-reasoning': wrapModel(
+          deepseek('deepseek-reasoner'),
+          extractReasoningMiddleware({ tagName: 'think' })
+        ),
+        'title-model': wrapModel(deepseek('deepseek-chat')),
+        'artifact-model': wrapModel(deepseek('deepseek-chat')),
       },
     });

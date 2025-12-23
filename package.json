@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^2.0.0",
+    "@ai-sdk/devtools": "^0.0.1",
     "@ai-sdk/provider": "3.0.0",
     "@ai-sdk/react": "3.0.1",
     "@codemirror/lang-javascript": "^6.2.2",

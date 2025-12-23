@@ -127,7 +127,7 @@ export async function synthesizerNode(
 
     return {
       synthesizedContent: content,
-      finalReasoning: reasoning,
+      finalReasoning: reasoningText,
       currentNode: 'synthesizer',
     };
   } catch (error) {

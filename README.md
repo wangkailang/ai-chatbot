@@ -19,3 +19,9 @@
   npx neonctl@latest init
   # then ai chat create redis server
   ```
+
+## Devtool
+
+```bash
+npx @ai-sdk/devtools
+```
