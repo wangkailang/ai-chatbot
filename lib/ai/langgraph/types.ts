@@ -36,7 +36,7 @@ export type RoleDefinition = {
  */
 export type RoleAnalysis = {
   identifiedRoles: RoleDefinition[];
-  reasoning: string; // Why these roles were selected
+  reasoningText: string; // Why these roles were selected
   confidence: number; // 0.0-1.0 confidence in role selection
 };
 
@@ -48,7 +48,7 @@ export type AgentOutput = {
   roleName: string;
   roleDescription: string;
   content: string; // Markdown content
-  reasoning: string; // Agent's reasoning for its choices
+  reasoningText: string; // Agent's reasoning for its choices
   confidence: number; // 0.0-1.0 confidence in output
   metadata: Record<string, unknown>;
 };

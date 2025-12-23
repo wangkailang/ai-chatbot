@@ -2,7 +2,7 @@
  * Output formatter for multi-agent writing results
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import type { WritingGraphState } from '@/lib/ai/langgraph/types';
 
 /**
@@ -20,7 +20,7 @@ export const MultiAgentOutputSchema = z.object({
     })
   ),
   roleAnalysis: z.object({
-    reasoning: z.string(),
+    reasoningText: z.string(),
     confidence: z.number(),
   }),
   agents: z.record(
@@ -28,7 +28,7 @@ export const MultiAgentOutputSchema = z.object({
       roleName: z.string(),
       roleDescription: z.string(),
       contribution: z.string(),
-      reasoning: z.string(),
+      reasoningText: z.string(),
       confidence: z.number(),
     })
   ),
@@ -61,7 +61,7 @@ export function formatMultiAgentOutput(
     })) || [];
 
   const roleAnalysis = {
-    reasoning: state.roleAnalysis?.reasoning || 'No analysis available',
+    reasoningText: state.roleAnalysis?.reasoningText || 'No analysis available',
     confidence: state.roleAnalysis?.confidence || 0,
   };
 
@@ -72,7 +72,7 @@ export function formatMultiAgentOutput(
       roleName: output.roleName,
       roleDescription: output.roleDescription,
       contribution: output.content,
-      reasoning: output.reasoning,
+      reasoningText: output.reasoningText,
       confidence: output.confidence,
     };
   }

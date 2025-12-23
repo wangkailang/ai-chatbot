@@ -38,7 +38,7 @@ export class UniversalWritingAgent {
     const prompt = this.buildPrompt(userRequest, constraints);
 
     // Execute with timeout
-    const { text, reasoning } = await Promise.race([
+    const { text, reasoningText } = await Promise.race([
       this.executeGeneration(prompt),
       this.timeoutPromise(),
     ]);
@@ -49,7 +49,7 @@ export class UniversalWritingAgent {
       roleName: this.roleDefinition.name,
       roleDescription: this.roleDefinition.description,
       content: text,
-      reasoning: reasoning || `Generated as ${this.roleDefinition.name}`,
+      reasoningText: reasoning || `Generated as ${this.roleDefinition.name}`,
       confidence: 0.8, // Default confidence, could be enhanced with model feedback
       metadata: {
         priority: this.roleDefinition.priority,
@@ -67,7 +67,7 @@ export class UniversalWritingAgent {
    */
   private async executeGeneration(
     prompt: string
-  ): Promise<{ text: string; reasoning?: string }> {
+  ): Promise<{ text: string; reasoningText?: string }> {
     const result = await generateText({
       model: myProvider.languageModel('chat-model'),
       system: this.roleDefinition.promptTemplate,
@@ -76,13 +76,13 @@ export class UniversalWritingAgent {
     });
 
     const reasoningText =
-      result.reasoning && result.reasoning.length > 0
-        ? result.reasoning.map((r) => r.text).join('\n')
+      result.reasoningText && result.reasoningText.length > 0
+        ? result.reasoningText.map((r) => r.text).join('\n')
         : '';
 
     return {
       text: result.text,
-      reasoning: reasoningText,
+      reasoningText: reasoningText,
     };
   }
 

@@ -1,5 +1,5 @@
 import { tool } from 'ai';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { formatMultiAgentOutput } from '@/lib/ai/formatters/multi-agent-output';
 import {
   createInitialState,

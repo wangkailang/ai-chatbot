@@ -1,5 +1,5 @@
 import type { InferUITool, UIMessage } from 'ai';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import type { ArtifactKind } from '@/components/artifact';
 import type { createDocument } from './ai/tools/create-document';
 import type { getWeather } from './ai/tools/get-weather';

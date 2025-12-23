@@ -103,7 +103,7 @@ export const sheetArtifact = new Artifact<'sheet', Metadata>({
           parts: [
             {
               type: 'text',
-              text: 'Can you please analyze and visualize the data by creating a new code artifact in python?',
+              text: 'Can you please analyze and visualize the data by creating a new code artifact in typescript?',
             },
           ],
         });

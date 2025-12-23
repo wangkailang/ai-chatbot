@@ -9,12 +9,12 @@ import {
 
 type MessageReasoningProps = {
   isLoading: boolean;
-  reasoning: string;
+  reasoningText: string;
 };
 
 export function MessageReasoning({
   isLoading,
-  reasoning,
+  reasoningText,
 }: MessageReasoningProps) {
   const [hasBeenStreaming, setHasBeenStreaming] = useState(isLoading);
 

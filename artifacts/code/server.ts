@@ -1,5 +1,5 @@
 import { streamObject } from 'ai';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { codePrompt, updateDocumentPrompt } from '@/lib/ai/prompts';
 import { myProvider } from '@/lib/ai/providers';
 import { createDocumentHandler } from '@/lib/artifacts/server';
