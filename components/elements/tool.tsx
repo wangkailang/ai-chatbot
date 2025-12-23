@@ -1,14 +1,7 @@
 'use client';
 
 import type { ToolUIPart } from 'ai';
-import {
-  CheckCircleIcon,
-  ChevronDownIcon,
-  CircleIcon,
-  ClockIcon,
-  WrenchIcon,
-  XCircleIcon,
-} from 'lucide-react';
+import { ChevronDownIcon, WrenchIcon } from 'lucide-react';
 import type { ComponentProps, ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -18,6 +11,7 @@ import {
 } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from './code-block';
+import { toolStatusIcons, toolStatusLabels } from './tool-status';
 
 export type ToolProps = ComponentProps<typeof Collapsible>;
 
@@ -34,31 +28,15 @@ export type ToolHeaderProps = {
   className?: string;
 };
 
-const getStatusBadge = (status: ToolUIPart['state']) => {
-  const labels = {
-    'input-streaming': 'Pending',
-    'input-available': 'Running',
-    'output-available': 'Completed',
-    'output-error': 'Error',
-  } as const;
-
-  const icons = {
-    'input-streaming': <CircleIcon className="size-4" />,
-    'input-available': <ClockIcon className="size-4 animate-pulse" />,
-    'output-available': <CheckCircleIcon className="size-4 text-green-600" />,
-    'output-error': <XCircleIcon className="size-4 text-red-600" />,
-  } as const;
-
-  return (
-    <Badge
-      className="flex items-center gap-1 rounded-full text-xs"
-      variant="secondary"
-    >
-      {icons[status]}
-      <span>{labels[status]}</span>
-    </Badge>
-  );
-};
+const getStatusBadge = (status: ToolUIPart['state']) => (
+  <Badge
+    className="flex items-center gap-1 rounded-full text-xs"
+    variant="secondary"
+  >
+    {toolStatusIcons[status]}
+    <span>{toolStatusLabels[status]}</span>
+  </Badge>
+);
 
 export const ToolHeader = ({
   className,
