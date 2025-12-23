@@ -31,7 +31,7 @@ export function MessageReasoning({
       isStreaming={isLoading}
     >
       <ReasoningTrigger />
-      <ReasoningContent>{reasoning}</ReasoningContent>
+      <ReasoningContent>{reasoningText}</ReasoningContent>
     </Reasoning>
   );
 }

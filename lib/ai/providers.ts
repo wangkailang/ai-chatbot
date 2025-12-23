@@ -9,7 +9,6 @@ import { isTestEnvironment } from '../constants';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-// biome-ignore lint/suspicious/noExplicitAny: V2/V3 type compatibility workaround
 function wrapModel(model: any, middleware?: any): any {
   const middlewares: any[] = [];
 
