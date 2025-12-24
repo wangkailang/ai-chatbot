@@ -55,10 +55,7 @@ export async function synthesizeOutputs(
     temperature: 0.7,
   });
 
-  const reasoningText =
-    result.reasoningText && result.reasoningText.length > 0
-      ? result.reasoningText.map((r) => r.text).join('\n')
-      : '';
+  const reasoningText = result.reasoningText || '';
 
   return {
     content: result.text,
