@@ -315,3 +315,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ChatGPT style code blocks - assistant messages */
+[data-role="assistant"] [data-testid="message-content"] pre {
+  @apply my-3 rounded-xl border border-border bg-zinc-900 dark:bg-zinc-900;
+}
+
+[data-role="assistant"] [data-testid="message-content"] pre code {
+  @apply block overflow-x-auto p-4 text-sm text-zinc-100;
+}
+
+[data-role="assistant"] [data-testid="message-content"] :not(pre) > code {
+  @apply rounded bg-muted px-1.5 py-0.5 text-sm;
+}
+
+/* User messages - lighter code block style */
+[data-role="user"] [data-testid="message-content"] pre {
+  @apply my-2 rounded-lg bg-black/10 dark:bg-white/10;
+}
+
+[data-role="user"] [data-testid="message-content"] pre code {
+  @apply block overflow-x-auto p-3 text-sm;
+}

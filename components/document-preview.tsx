@@ -26,12 +26,21 @@ type DocumentPreviewProps = {
   isReadonly: boolean;
   result?: any;
   args?: any;
+  state?:
+    | 'input-streaming'
+    | 'input-available'
+    | 'approval-requested'
+    | 'approval-responded'
+    | 'output-available'
+    | 'output-error'
+    | 'output-denied';
 };
 
 export function DocumentPreview({
   isReadonly,
   result,
   args,
+  state,
 }: DocumentPreviewProps) {
   const { artifact, setArtifact } = useArtifact();
 
@@ -93,6 +102,19 @@ export function DocumentPreview({
         />
       );
     }
+  }
+
+  // If tool call was interrupted (no result and not streaming), show interrupted state
+  if (
+    !result &&
+    state !== 'output-available' &&
+    artifact.status !== 'streaming'
+  ) {
+    return (
+      <div className="w-full rounded-2xl border border-zinc-300 border-dashed bg-zinc-50 p-4 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400">
+        Document creation was interrupted
+      </div>
+    );
   }
 
   if (isDocumentsFetching) {
