@@ -240,7 +240,7 @@ function PureMultimodalInput({
         )}
 
       <input
-        className="pointer-events-none fixed -top-4 -left-4 size-0.5 opacity-0"
+        className="-top-4 -left-4 pointer-events-none fixed size-0.5 opacity-0"
         multiple
         onChange={handleFileChange}
         ref={fileInputRef}
@@ -252,7 +252,8 @@ function PureMultimodalInput({
         className="rounded-xl border border-border bg-background p-3 shadow-xs transition-all duration-200 focus-within:border-border hover:border-muted-foreground/50"
         onSubmit={(event) => {
           event.preventDefault();
-          if (status !== 'ready') {
+          // 只在 streaming 或 submitted 状态时阻止提交
+          if (status === 'streaming' || status === 'submitted') {
             toast.error('Please wait for the model to finish its response!');
           } else {
             submitForm();
@@ -463,7 +464,8 @@ function PureStopButton({
       onClick={(event) => {
         event.preventDefault();
         stop();
-        setMessages((messages) => messages);
+        // 强制触发消息更新，确保 UI 状态同步
+        setMessages((messages) => [...messages]);
       }}
     >
       <StopIcon size={14} />

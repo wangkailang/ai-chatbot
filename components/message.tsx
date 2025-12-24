@@ -127,19 +127,20 @@ const PurePreviewMessage = ({
                   <div key={key}>
                     <MessageContent
                       className={cn({
-                        'w-fit break-words rounded-2xl px-3 py-2 text-right text-white':
+                        'w-fit max-w-[85%] break-words rounded-3xl bg-secondary px-4 py-2.5 text-left text-secondary-foreground':
                           message.role === 'user',
                         'bg-transparent px-0 py-0 text-left':
                           message.role === 'assistant',
                       })}
                       data-testid="message-content"
-                      style={
-                        message.role === 'user'
-                          ? { backgroundColor: '#006cff' }
-                          : undefined
-                      }
                     >
-                      <Response>{sanitizeText(part.text)}</Response>
+                      {message.role === 'user' ? (
+                        <div className="whitespace-pre-wrap">
+                          {sanitizeText(part.text)}
+                        </div>
+                      ) : (
+                        <Response>{sanitizeText(part.text)}</Response>
+                      )}
                     </MessageContent>
                   </div>
                 );
