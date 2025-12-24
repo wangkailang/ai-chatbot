@@ -58,6 +58,27 @@ test.describe('Chat activity', () => {
     await expect(chatPage.sendButton).toBeVisible();
   });
 
+  test('Stop generation during streaming', async () => {
+    // Send a message to start generation
+    await chatPage.sendUserMessage('Why is grass green?');
+
+    // Wait for streaming to start (assistant message appears)
+    await chatPage.waitForStreamingState();
+
+    // Verify stop button is visible during streaming
+    await expect(chatPage.stopButton).toBeVisible();
+
+    // Click stop button during streaming
+    await chatPage.stopButton.click();
+
+    // Verify send button is visible after stopping
+    await expect(chatPage.sendButton).toBeVisible();
+
+    // Verify that partial content is preserved (assistant message exists)
+    const assistantMessageCount = await chatPage.getAssistantMessageCount();
+    expect(assistantMessageCount).toBeGreaterThanOrEqual(1);
+  });
+
   test('Edit user message and resubmit', async () => {
     await chatPage.sendUserMessage('Why is grass green?');
     await chatPage.isGenerationComplete();

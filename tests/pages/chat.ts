@@ -262,4 +262,18 @@ export class ChatPage {
       element.scrollTop = 0;
     });
   }
+
+  async waitForStreamingState(timeout = 10_000): Promise<void> {
+    // Wait for an assistant message to appear, indicating streaming has started
+    await this.page.waitForSelector('[data-testid="message-assistant"]', {
+      timeout,
+    });
+  }
+
+  async getAssistantMessageCount(): Promise<number> {
+    const messageElements = await this.page
+      .getByTestId('message-assistant')
+      .all();
+    return messageElements.length;
+  }
 }
