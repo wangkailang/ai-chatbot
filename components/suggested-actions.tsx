@@ -15,7 +15,7 @@ type SuggestedActionsProps = {
 
 function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
   const suggestedActions = [
-    '使用 Next.js 有什么优势？',
+    '一家公司的季度收入分别为，2022 Q1：1.25 亿美元2022 Q2，增长 12%2022 Q3：比 Q2 减少 8%，2022 Q4：比 Q3 增加 20 百万美元。请问：该公司 2022 年全年总收入 是多少亿美元',
     '写一段代码演示 Dijkstra 算法',
     '帮我写一篇关于海南的文章',
     '深圳的天气怎么样？',

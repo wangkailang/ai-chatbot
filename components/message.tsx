@@ -169,12 +169,24 @@ const PurePreviewMessage = ({
             if (type === 'tool-getWeather') {
               const { toolCallId, state } = part;
 
+              // If tool was interrupted (not loading and not completed), show interrupted state
+              const isInterrupted = !isLoading && state !== 'output-available';
+
               return (
                 <Tool defaultOpen={true} key={toolCallId}>
-                  <ToolHeader state={state} type="tool-getWeather" />
+                  <ToolHeader
+                    state={isInterrupted ? 'output-error' : state}
+                    type="tool-getWeather"
+                  />
                   <ToolContent>
-                    {state === 'input-available' && (
+                    {state === 'input-available' && !isInterrupted && (
                       <ToolInput input={part.input} />
+                    )}
+                    {isInterrupted && (
+                      <ToolOutput
+                        errorText="Tool execution was interrupted"
+                        output={undefined}
+                      />
                     )}
                     {state === 'output-available' && (
                       <ToolOutput
@@ -188,7 +200,7 @@ const PurePreviewMessage = ({
             }
 
             if (type === 'tool-createDocument') {
-              const { toolCallId } = part;
+              const { toolCallId, state } = part;
 
               if (part.output && 'error' in part.output) {
                 return (
@@ -206,12 +218,13 @@ const PurePreviewMessage = ({
                   isReadonly={isReadonly}
                   key={toolCallId}
                   result={part.output}
+                  state={state}
                 />
               );
             }
 
             if (type === 'tool-updateDocument') {
-              const { toolCallId } = part;
+              const { toolCallId, state } = part;
 
               if (part.output && 'error' in part.output) {
                 return (
@@ -230,6 +243,7 @@ const PurePreviewMessage = ({
                     args={{ ...part.output, isUpdate: true }}
                     isReadonly={isReadonly}
                     result={part.output}
+                    state={state}
                   />
                 </div>
               );
@@ -238,12 +252,24 @@ const PurePreviewMessage = ({
             if (type === 'tool-requestSuggestions') {
               const { toolCallId, state } = part;
 
+              // If tool was interrupted (not loading and not completed), show interrupted state
+              const isInterrupted = !isLoading && state !== 'output-available';
+
               return (
                 <Tool defaultOpen={true} key={toolCallId}>
-                  <ToolHeader state={state} type="tool-requestSuggestions" />
+                  <ToolHeader
+                    state={isInterrupted ? 'output-error' : state}
+                    type="tool-requestSuggestions"
+                  />
                   <ToolContent>
-                    {state === 'input-available' && (
+                    {state === 'input-available' && !isInterrupted && (
                       <ToolInput input={part.input} />
+                    )}
+                    {isInterrupted && (
+                      <ToolOutput
+                        errorText="Tool execution was interrupted"
+                        output={undefined}
+                      />
                     )}
                     {state === 'output-available' && (
                       <ToolOutput
@@ -271,12 +297,24 @@ const PurePreviewMessage = ({
             if (type === 'tool-multiAgentWriting') {
               const { toolCallId, state } = part;
 
+              // If tool was interrupted (not loading and not completed), show interrupted state
+              const isInterrupted = !isLoading && state !== 'output-available';
+
               return (
                 <Tool defaultOpen={true} key={toolCallId}>
-                  <ToolHeader state={state} type="tool-multiAgentWriting" />
+                  <ToolHeader
+                    state={isInterrupted ? 'output-error' : state}
+                    type="tool-multiAgentWriting"
+                  />
                   <ToolContent>
-                    {state === 'input-available' && (
+                    {state === 'input-available' && !isInterrupted && (
                       <ToolInput input={part.input} />
+                    )}
+                    {isInterrupted && (
+                      <ToolOutput
+                        errorText="Tool execution was interrupted"
+                        output={undefined}
+                      />
                     )}
                     {state === 'output-available' && (
                       <ToolOutput
