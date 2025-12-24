@@ -2,7 +2,7 @@
  * Role types and Zod schemas for validation
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 /**
  * Zod schema for role definition constraints
@@ -30,7 +30,7 @@ export const RoleDefinitionSchema = z.object({
  */
 export const RoleAnalysisSchema = z.object({
   identifiedRoles: z.array(RoleDefinitionSchema).min(2).max(4),
-  reasoning: z.string(),
+  reasoningText: z.string(),
   confidence: z.number().min(0).max(1),
 });
 
@@ -42,7 +42,7 @@ export const AgentOutputSchema = z.object({
   roleName: z.string(),
   roleDescription: z.string(),
   content: z.string(),
-  reasoning: z.string(),
+  reasoningText: z.string(),
   confidence: z.number().min(0).max(1),
   metadata: z.record(z.unknown()),
 });

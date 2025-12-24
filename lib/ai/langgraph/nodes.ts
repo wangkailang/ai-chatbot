@@ -119,7 +119,7 @@ export async function synthesizerNode(
     const strategy =
       state.userConstraints?.synthesisStrategy || SynthesisStrategy.BLENDING;
 
-    const { content, reasoning } = await synthesizeOutputs(
+    const { content, reasoningText } = await synthesizeOutputs(
       agentOutputsArray,
       state.userRequest,
       strategy
@@ -127,7 +127,7 @@ export async function synthesizerNode(
 
     return {
       synthesizedContent: content,
-      finalReasoning: reasoning,
+      finalReasoning: reasoningText,
       currentNode: 'synthesizer',
     };
   } catch (error) {

@@ -108,7 +108,7 @@ export async function analyzeRoles(
           priority: 2,
         },
       ],
-      reasoning: 'Using fallback roles due to analysis error',
+      reasoningText: 'Using fallback roles due to analysis error',
       confidence: 0.5,
     };
   }

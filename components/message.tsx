@@ -116,7 +116,7 @@ const PurePreviewMessage = ({
                 <MessageReasoning
                   isLoading={isLoading}
                   key={key}
-                  reasoning={part.text}
+                  reasoningText={part.text}
                 />
               );
             }

@@ -34,7 +34,7 @@ export async function synthesizeOutputs(
   agentOutputs: AgentOutput[],
   userRequest: string,
   strategy: SynthesisStrategy = SynthesisStrategy.BLENDING
-): Promise<{ content: string; reasoning: string }> {
+): Promise<{ content: string; reasoningText: string }> {
   if (agentOutputs.length === 0) {
     throw new Error('No agent outputs to synthesize');
   }
@@ -42,7 +42,7 @@ export async function synthesizeOutputs(
   if (agentOutputs.length === 1) {
     return {
       content: agentOutputs[0].content,
-      reasoning: `Single agent output from ${agentOutputs[0].roleName}`,
+      reasoningText: `Single agent output from ${agentOutputs[0].roleName}`,
     };
   }
 
@@ -55,14 +55,11 @@ export async function synthesizeOutputs(
     temperature: 0.7,
   });
 
-  const reasoningText =
-    result.reasoning && result.reasoning.length > 0
-      ? result.reasoning.map((r) => r.text).join('\n')
-      : '';
+  const reasoningText = result.reasoningText || '';
 
   return {
     content: result.text,
-    reasoning:
+    reasoningText:
       reasoningText || `Synthesized content using ${strategy} strategy`,
   };
 }
@@ -83,8 +80,8 @@ function buildSynthesisPrompt(
   for (const output of agentOutputs) {
     prompt += `=== ${output.roleName} (${output.roleDescription}) ===\n`;
     prompt += `${output.content}\n\n`;
-    if (output.reasoning) {
-      prompt += `Agent's reasoning: ${output.reasoning}\n\n`;
+    if (output.reasoningText) {
+      prompt += `Agent's reasoning: ${output.reasoningText}\n\n`;
     }
   }
 

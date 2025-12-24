@@ -21,7 +21,6 @@ import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 import { saveChatModelAsCookie } from '@/app/(chat)/actions';
 import { SelectItem } from '@/components/ui/select';
 import { chatModels } from '@/lib/ai/models';
-import { myProvider } from '@/lib/ai/providers';
 import type { Attachment, ChatMessage } from '@/lib/types';
 import type { AppUsage } from '@/lib/usage';
 import { cn } from '@/lib/utils';
@@ -195,11 +194,6 @@ function PureMultimodalInput({
     }
   }, []);
 
-  const _modelResolver = useMemo(
-    () => myProvider.languageModel(selectedModelId),
-    [selectedModelId]
-  );
-
   const contextProps = useMemo(
     () => ({
       usage,
@@ -246,7 +240,7 @@ function PureMultimodalInput({
         )}
 
       <input
-        className="-top-4 -left-4 pointer-events-none fixed size-0.5 opacity-0"
+        className="pointer-events-none fixed -top-4 -left-4 size-0.5 opacity-0"
         multiple
         onChange={handleFileChange}
         ref={fileInputRef}
